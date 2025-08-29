@@ -1,5 +1,5 @@
 import React from "react";
-import Profile from "../images/Profile.jpg";
+import Profile from "../images/Profile.jpeg";
 
 const HeroSection = ({ language }) => {
   const content = {
