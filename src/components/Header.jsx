@@ -1,6 +1,7 @@
 import React from "react";
+import { FaSun, FaMoon } from "react-icons/fa";
 
-const Header = () => (
+const Header = ({ isDarkMode, toggleTheme }) => (
   <header className="header">
     <nav className="header-nav">
       <ul>
@@ -21,6 +22,11 @@ const Header = () => (
         </li>
         <li>
           <a href="#contact">Contact</a>
+        </li>
+        <li className="theme-toggle">
+          <button onClick={toggleTheme} className="theme-btn" aria-label="Toggle theme">
+            {isDarkMode ? <FaSun /> : <FaMoon />}
+          </button>
         </li>
       </ul>
     </nav>

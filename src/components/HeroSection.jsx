@@ -1,25 +1,20 @@
 import React from "react";
 import myPortrait from "../images/Profile.jpg";
-import "./Hero.css";
 
 const Hero = () => (
   <section className="hero-section" id="home">
-    <div className="hero-bg-animated"></div>
-    <div className="hero-flex">
-      <div className="hero-portrait-container">
-        <img src={myPortrait} alt="Your portrait" className="hero-portrait" />
-      </div>
-      <div className="hero-content hero-content-left">
-        <h2 className="section-title">
+    <div className="bubble-container" style={{ maxWidth: '800px', textAlign: 'center' }}>
+      <img src={myPortrait} alt="Abdallah Ramadan" className="hero-portrait" />
+      <div className="hero-content">
+        <h1 className="hero-title">
           Abdallah Ramadan Abdelshafy
-          <span className="section-underline"></span>
-        </h2>{" "}
-        <h2 className="subtitle">Full-Stack Python Developer</h2>
-        <p className="intro">
+        </h1>
+        <h2 className="hero-subtitle">Full-Stack Python Developer</h2>
+        <p className="hero-description">
           Building scalable web apps with{" "}
-          <span className="highlight">Python</span>,{" "}
-          <span className="highlight">Django</span>,{" "}
-          <span className="highlight">React</span>, and a passion for elegant
+          <span style={{ color: '#4a90e2', fontWeight: '600' }}>Python</span>,{" "}
+          <span style={{ color: '#4a90e2', fontWeight: '600' }}>Django</span>,{" "}
+          <span style={{ color: '#4a90e2', fontWeight: '600' }}>React</span>, and a passion for elegant
           user experiences.
         </p>
         <a

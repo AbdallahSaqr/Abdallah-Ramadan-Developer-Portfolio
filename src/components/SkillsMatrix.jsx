@@ -32,7 +32,6 @@ const Skills = () => {
     <section className="skills-section" id="skills">
       <h2 className="section-title">
         Skills
-        <span className="section-underline"></span>
       </h2>
       <div className="skills-grid">
         {Object.entries(skillGroups).map(([category, skills], groupIdx) => (

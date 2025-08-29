@@ -12,7 +12,7 @@ const experience = [
     description: "Led a team managing volunteer exchanges and operations."
   },
   {
-    title: "Bachelor’s Degree",
+    title: "Bachelor's Degree",
     organization: "Beni Suef University",
     period: "Sep 2018 – May 2023",
     description: "Faculty of Navigation Science and Space Technology. GPA: 3.2"
@@ -23,7 +23,6 @@ const Experience = () => (
   <section className="experience-section" id="experience">
     <h2 className="section-title">
       Experience & Education
-      <span className="section-underline"></span>
     </h2>
     <div className="experience-list">
       {experience.map(({ title, organization, period, description }) => (

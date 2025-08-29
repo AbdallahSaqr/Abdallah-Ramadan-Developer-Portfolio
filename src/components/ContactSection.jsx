@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaLinkedin, FaGithub, FaEnvelope, FaCopy, FaCheck } from "react-icons/fa";
+import { FaLinkedin, FaGithub, FaEnvelope, FaCopy, FaCheck, FaPhone } from "react-icons/fa";
 
 const CONTACTS = [
   {
@@ -7,68 +7,66 @@ const CONTACTS = [
     url: "https://linkedin.com/in/abdallahramadan7",
     icon: <FaLinkedin />,
     color: "#0a66c2",
-    label: "Connect on LinkedIn"
+    label: "LinkedIn",
+    displayText: "linkedin.com/in/abdallahramadan7"
   },
   {
     name: "GitHub",
     url: "https://github.com/AbdallahSaqr",
     icon: <FaGithub />,
     color: "#22223b",
-    label: "View GitHub Profile"
+    label: "GitHub",
+    displayText: "github.com/AbdallahSaqr"
+  },
+  {
+    name: "Phone",
+    url: "tel:+201069100373",
+    icon: <FaPhone />,
+    color: "#22c55e",
+    label: "Phone",
+    displayText: "+20 106 910 0373"
   }
 ];
 
 const EMAIL = "abdallahramadan2707@gmail.com";
 
 const Contact = () => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(EMAIL);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
   return (
     <section className="contact-section" id="contact">
       <h2 className="section-title">
         Contact Me
-        <span className="section-underline"></span>
       </h2>
       <div className="contact-cards">
         {CONTACTS.map((c) => (
           <a
             key={c.name}
             href={c.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={c.name === "Phone" ? "_self" : "_blank"}
+            rel={c.name === "Phone" ? "" : "noopener noreferrer"}
             className="contact-card"
-            style={{ borderColor: "#0965c8" }}
             aria-label={c.label}
           >
-            <span className="contact-icon" style={{ color: "#0965c8" }}>
+            <span className="contact-icon">
               {c.icon}
             </span>
-            <span className="contact-label">{c.name}</span>
+            <span className="contact-label">{c.label}</span>
+            <span className="contact-display-text">{c.displayText}</span>
           </a>
         ))}
-        <div className="contact-card" style={{ borderColor: "#0965c8" }}>
-          <span className="contact-icon" style={{ color: "#0965c8" }}>
+        <a
+          href={`mailto:${EMAIL}`}
+          className="contact-card"
+          aria-label="Send email"
+        >
+          <span className="contact-icon">
             <FaEnvelope />
           </span>
-          <span className="contact-label">{EMAIL}</span>
-          <button
-            className="copy-btn"
-            onClick={handleCopy}
-            aria-label="Copy email"
-            tabIndex={0}
-          >
-            {copied ? <FaCheck color="#22c55e" /> : <FaCopy />}
-          </button>
-        </div>
+          <span className="contact-label">Email</span>
+          <span className="contact-display-text">{EMAIL}</span>
+        </a>
       </div>
       <p className="contact-note">
-        I’m always open to new opportunities, collaborations, or just a friendly chat!
+        I'm always open to new opportunities, collaborations, or just a friendly chat!
       </p>
     </section>
   );
