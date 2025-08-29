@@ -1,75 +1,118 @@
-import React, { useState } from "react";
-import { FaLinkedin, FaGithub, FaEnvelope, FaCopy, FaCheck, FaPhone } from "react-icons/fa";
+import React from "react";
+import { FaEnvelope, FaPhone, FaLinkedin, FaGithub } from "react-icons/fa";
 
-const CONTACTS = [
-  {
-    name: "LinkedIn",
-    url: "https://linkedin.com/in/abdallahramadan7",
-    icon: <FaLinkedin />,
-    color: "#0a66c2",
-    label: "LinkedIn",
-    displayText: "linkedin.com/in/abdallahramadan7"
-  },
-  {
-    name: "GitHub",
-    url: "https://github.com/AbdallahSaqr",
-    icon: <FaGithub />,
-    color: "#22223b",
-    label: "GitHub",
-    displayText: "github.com/AbdallahSaqr"
-  },
-  {
-    name: "Phone",
-    url: "tel:+201069100373",
-    icon: <FaPhone />,
-    color: "#22c55e",
-    label: "Phone",
-    displayText: "+20 106 910 0373"
-  }
-];
+const ContactSection = ({ language }) => {
+  const content = {
+    en: {
+      title: "Get In Touch",
+      note: "Feel free to reach out for collaborations, opportunities, or just to say hello!",
+      contacts: [
+        {
+          name: "email",
+          label: "Email",
+          icon: FaEnvelope,
+          url: "mailto:abdallahramadan2707@gmail.com",
+          displayText: "abdallahramadan2707@gmail.com",
+          color: "#ea4335"
+        },
+        {
+          name: "phone",
+          label: "Phone",
+          icon: FaPhone,
+          url: "tel:+201069100373",
+          displayText: "+20 106 910 0373",
+          color: "#22c55e"
+        },
+        {
+          name: "linkedin",
+          label: "LinkedIn",
+          icon: FaLinkedin,
+          url: "https://linkedin.com/in/abdallahramadan7",
+          displayText: "abdallahramadan7",
+          color: "#0077b5"
+        },
+        {
+          name: "github",
+          label: "GitHub",
+          icon: FaGithub,
+          url: "https://github.com/AbdallahSaqr",
+          displayText: "AbdallahSaqr",
+          color: "#333"
+        }
+      ]
+    },
+    ar: {
+      title: "تواصل معي",
+      note: "لا تتردد في التواصل للتعاون أو الفرص أو فقط لتحية!",
+      contacts: [
+        {
+          name: "email",
+          label: "البريد الإلكتروني",
+          icon: FaEnvelope,
+          url: "mailto:abdallahramadan2707@gmail.com",
+          displayText: "abdallahramadan2707@gmail.com",
+          color: "#ea4335"
+        },
+        {
+          name: "phone",
+          label: "الهاتف",
+          icon: FaPhone,
+          url: "tel:+201069100373",
+          displayText: "+373001960102",
+          color: "#22c55e"
+        },
+        {
+          name: "linkedin",
+          label: "LinkedIn",
+          icon: FaLinkedin,
+          url: "https://linkedin.com/in/abdallahramadan7",
+          displayText: "abdallahramadan7",
+          color: "#0077b5"
+        },
+        {
+          name: "github",
+          label: "GitHub",
+          icon: FaGithub,
+          url: "https://github.com/AbdallahSaqr",
+          displayText: "AbdallahSaqr",
+          color: "#333"
+        }
+      ]
+    }
+  };
 
-const EMAIL = "abdallahramadan2707@gmail.com";
+  const current = content[language] || content.en;
 
-const Contact = () => {
   return (
-    <section className="contact-section" id="contact">
-      <h2 className="section-title">
-        Contact Me
-      </h2>
+    <section id="contact" className="contact-section">
+      <h2 className="section-title">{current.title}</h2>
+      
       <div className="contact-cards">
-        {CONTACTS.map((c) => (
-          <a
-            key={c.name}
-            href={c.url}
-            target={c.name === "Phone" ? "_self" : "_blank"}
-            rel={c.name === "Phone" ? "" : "noopener noreferrer"}
-            className="contact-card"
-            aria-label={c.label}
-          >
-            <span className="contact-icon">
-              {c.icon}
-            </span>
-            <span className="contact-label">{c.label}</span>
-            <span className="contact-display-text">{c.displayText}</span>
-          </a>
-        ))}
-        <a
-          href={`mailto:${EMAIL}`}
-          className="contact-card"
-          aria-label="Send email"
-        >
-          <span className="contact-icon">
-            <FaEnvelope />
-          </span>
-          <span className="contact-label">Email</span>
-          <span className="contact-display-text">{EMAIL}</span>
-        </a>
+        {current.contacts.map((contact, index) => {
+          const IconComponent = contact.icon;
+          return (
+            <a
+              key={index}
+              href={contact.url}
+              target={contact.name === "phone" ? "_self" : "_blank"}
+              rel={contact.name === "phone" ? "" : "noopener noreferrer"}
+              className="contact-card"
+              style={{ "--contact-color": contact.color }}
+            >
+              <IconComponent 
+                className="contact-icon" 
+                style={{ color: contact.color }}
+              />
+              <span className="contact-label">{contact.label}</span>
+              <span className="contact-display-text">{contact.displayText}</span>
+            </a>
+          );
+        })}
       </div>
-      <p className="contact-note">
-        I'm always open to new opportunities, collaborations, or just a friendly chat!
-      </p>
+      
+      <p className="contact-note">{current.note}</p>
     </section>
   );
 };
 
-export default Contact;
+export default ContactSection;

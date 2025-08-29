@@ -1,42 +1,41 @@
 import React from "react";
-import myPortrait from "../images/Profile.jpg";
+import Profile from "../images/Profile.jpg";
 
-const Hero = () => (
-  <section className="hero-section" id="home">
-    <div className="bubble-container" style={{ maxWidth: '800px', textAlign: 'center' }}>
-      <img src={myPortrait} alt="Abdallah Ramadan" className="hero-portrait" />
+const HeroSection = ({ language }) => {
+  const content = {
+    en: {
+      title: "Abdallah Ramadan",
+      subtitle: "Full Stack Developer",
+      description: "Passionate developer crafting digital experiences with modern technologies. Specializing in React, Django, and cloud solutions.",
+      cta: "Download My CV"
+    },
+    ar: {
+      title: "عبدالله رمضان",
+      subtitle: "مطور ويب شامل",
+      description: "مطور شغوف بصنع تجارب رقمية باستخدام التقنيات الحديثة. متخصص في React و Django وحلول السحابة.",
+      cta: "تحميل السيرة الذاتية"
+    }
+  };
+
+  const current = content[language] || content.en;
+
+  return (
+    <section id="home" className="hero-section">
       <div className="hero-content">
-        <h1 className="hero-title">
-          Abdallah Ramadan Abdelshafy
-        </h1>
-        <h2 className="hero-subtitle">Full-Stack Python Developer</h2>
-        <p className="hero-description">
-          Building scalable web apps with{" "}
-          <span style={{ color: '#4a90e2', fontWeight: '600' }}>Python</span>,{" "}
-          <span style={{ color: '#4a90e2', fontWeight: '600' }}>Django</span>,{" "}
-          <span style={{ color: '#4a90e2', fontWeight: '600' }}>React</span>, and a passion for elegant
-          user experiences.
-        </p>
-        <a
-          href="https://drive.usercontent.google.com/download?id=1X_j9U0nAN3ejFJTNxwMjq5haVxHdrVKI&export=download&authuser=0&confirm=t&uuid=04dd27ae-6025-4de4-9001-6b35551a48f4&at=AN8xHorrS7xQwuX-D15MMaUf2NDU:1751650924455"
-          className="btn-animated"
-          download
-        >
-          <span>Download My CV</span>
-          <svg
-            className="btn-arrow"
-            width="24"
-            height="24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
+        <img 
+          src={Profile} 
+          alt={language === "ar" ? "عبدالله رمضان" : "Abdallah Ramadan"} 
+          className="hero-portrait"
+        />
+        <h1 className="hero-title">{current.title}</h1>
+        <h2 className="hero-subtitle">{current.subtitle}</h2>
+        <p className="hero-description">{current.description}</p>
+        <a href="https://drive.usercontent.google.com/download?id=1Mo7UmYsiHy2MznVccCF7VyeNd0gMdVyv&export=download&authuser=2&confirm=t&uuid=83641a53-fd67-420c-b264-79f070b344b6&at=AN8xHoqi-tMgsDH8joXAszPvkmJz:1756495873873" className="btn-animated">
+          {current.cta}
         </a>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
-export default Hero;
+export default HeroSection;

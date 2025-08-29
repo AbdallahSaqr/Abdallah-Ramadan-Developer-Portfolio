@@ -1,57 +1,81 @@
 import React, { useState } from "react";
-import { FaReact, FaPython, FaDocker, FaLinux, FaHtml5, FaCss3Alt, FaJs, FaGitAlt } from "react-icons/fa";
-import { SiDjango, SiFlask, SiOdoo, SiGithub } from "react-icons/si";
+import { 
+  FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaPython, 
+  FaDatabase, FaGit, FaDocker, FaAws, FaFigma, FaGithub 
+} from "react-icons/fa";
 
-const skillGroups = {
-  Frontend: [
-    { name: "React", icon: <FaReact color="#61dafb" />, desc: "Modern UI library for building interfaces" },
-    { name: "HTML", icon: <FaHtml5 color="#e34c26" />, desc: "Semantic markup" },
-    { name: "CSS", icon: <FaCss3Alt color="#1572b6" />, desc: "Responsive styling" },
-    { name: "JavaScript", icon: <FaJs color="#f7df1e" />, desc: "Dynamic scripting" }
-  ],
-  Backend: [
-    { name: "Python", icon: <FaPython color="#3776ab" />, desc: "Powerful backend language" },
-    { name: "Django", icon: <SiDjango color="#092e20" />, desc: "Robust Python web framework" },
-    { name: "Flask", icon: <SiFlask color="#000" />, desc: "Lightweight Python microframework" },
-    { name: "Odoo", icon: <SiOdoo color="#874c8c" />, desc: "Open-source ERP platform" }
-  ],
-  DevOps: [
-    { name: "Docker", icon: <FaDocker color="#2496ed" />, desc: "Containerization" },
-    { name: "Linux", icon: <FaLinux color="#000" />, desc: "Server OS and scripting" }
-  ],
-  Tools: [
-    { name: "Git", icon: <FaGitAlt color="#f34f29" />, desc: "Version control" },
-    { name: "GitHub", icon: <SiGithub color="#333" />, desc: "Remote code hosting" }
-  ]
-};
+const SkillsMatrix = ({ language }) => {
+  const [hoveredSkill, setHoveredSkill] = useState(null);
 
-const Skills = () => {
-  const [hovered, setHovered] = useState({ group: null, idx: null });
+  const content = {
+    en: {
+      title: "Skills & Technologies",
+      categories: {
+        frontend: "Frontend Development",
+        backend: "Backend Development",
+        tools: "Tools & Platforms"
+      }
+    },
+    ar: {
+      title: "المهارات والتقنيات",
+      categories: {
+        frontend: "تطوير الواجهة الأمامية",
+        backend: "تطوير الخلفية",
+        tools: "الأدوات والمنصات"
+      }
+    }
+  };
+
+  const current = content[language] || content.en;
+
+  const skills = {
+    frontend: [
+      { name: "HTML5", icon: FaHtml5, desc: "Semantic markup and accessibility" },
+      { name: "CSS3", icon: FaCss3Alt, desc: "Modern styling and animations" },
+      { name: "JavaScript", icon: FaJs, desc: "ES6+ and modern JS features" },
+      { name: "React", icon: FaReact, desc: "Component-based UI development" }
+    ],
+    backend: [
+      { name: "Node.js", icon: FaNodeJs, desc: "Server-side JavaScript runtime" },
+      { name: "Python", icon: FaPython, desc: "Backend development and automation" },
+      { name: "MongoDB", icon: FaDatabase, desc: "NoSQL database management" },
+      { name: "Express", icon: FaNodeJs, desc: "Web application framework" }
+    ],
+    tools: [
+      { name: "Git", icon: FaGit, desc: "Version control and collaboration" },
+      { name: "GitHub", icon: FaGithub, desc: "Code hosting and collaboration" },
+      { name: "Docker", icon: FaDocker, desc: "Containerization and deployment" },
+      { name: "AWS", icon: FaAws, desc: "Cloud infrastructure and services" }
+    ]
+  };
 
   return (
-    <section className="skills-section" id="skills">
-      <h2 className="section-title">
-        Skills
-      </h2>
+    <section id="skills" className="skills-section">
+      <h2 className="section-title">{current.title}</h2>
+      
       <div className="skills-grid">
-        {Object.entries(skillGroups).map(([category, skills], groupIdx) => (
-          <div className="skill-group" key={category}>
-            <h3 className="skill-category">{category}</h3>
+        {Object.entries(skills).map(([category, categorySkills]) => (
+          <div key={category} className="skill-group">
+            <h3 className="skill-category">
+              {current.categories[category]}
+            </h3>
             <div className="skill-badges">
-              {skills.map((skill, idx) => (
-                <div
-                  key={skill.name}
-                  className={`skill-badge${hovered.group === groupIdx && hovered.idx === idx ? " hovered" : ""}`}
-                  onMouseEnter={() => setHovered({ group: groupIdx, idx })}
-                  onMouseLeave={() => setHovered({ group: null, idx: null })}
-                  tabIndex={0}
-                  aria-label={skill.desc}
-                >
-                  <span className="skill-icon">{skill.icon}</span>
-                  <span className="skill-name">{skill.name}</span>
-                  <span className="skill-desc">{hovered.group === groupIdx && hovered.idx === idx ? skill.desc : ""}</span>
-                </div>
-              ))}
+              {categorySkills.map((skill, index) => {
+                const IconComponent = skill.icon;
+                return (
+                  <div
+                    key={index}
+                    className={`skill-badge ${hoveredSkill === skill.name ? 'hovered' : ''}`}
+                    onMouseEnter={() => setHoveredSkill(skill.name)}
+                    onMouseLeave={() => setHoveredSkill(null)}
+                    tabIndex={0}
+                  >
+                    <IconComponent className="skill-icon" />
+                    <span className="skill-name">{skill.name}</span>
+                    <span className="skill-desc">{skill.desc}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -60,4 +84,4 @@ const Skills = () => {
   );
 };
 
-export default Skills;
+export default SkillsMatrix;
