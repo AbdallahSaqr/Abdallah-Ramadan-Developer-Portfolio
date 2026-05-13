@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { useT } from "@/components/providers/language-provider";
 import { site } from "@/lib/site-config";
+import { Logo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
 import { LangToggle } from "./lang-toggle";
 import { cn } from "@/lib/utils";
@@ -54,7 +55,7 @@ function MobileMenuPanel({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease }}
-      className="fixed inset-0 z-[60] flex flex-col bg-background/95 backdrop-blur-2xl md:hidden"
+      className="fixed inset-0 z-[60] flex flex-col bg-background md:hidden"
     >
       <div className="flex items-center justify-between px-5 pt-5">
         <a
@@ -62,13 +63,7 @@ function MobileMenuPanel({ onClose }: { onClose: () => void }) {
           onClick={onClose}
           className="inline-flex items-center gap-2"
         >
-          <img
-            src="/abdallah-saqr-logo.svg"
-            alt={`${site.name} logo`}
-            width={36}
-            height={36}
-            className="h-9 w-9 rounded-md"
-          />
+          <Logo className="h-9 w-9" />
         </a>
         <button
           type="button"

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { site } from "@/lib/site-config";
 import { useT } from "@/components/providers/language-provider";
+import { Logo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
 import { LangToggle } from "./lang-toggle";
 import { MobileMenuTrigger } from "./mobile-menu";
@@ -36,13 +37,7 @@ export function Nav() {
         )}
       >
         <a href="#hero" className="group flex items-center gap-2 pl-2 sm:pl-3">
-          <img
-            src="/abdallah-saqr-logo.svg"
-            alt={`${site.name} logo`}
-            width={32}
-            height={32}
-            className="h-8 w-8 rounded-md transition-transform duration-300 group-hover:scale-105"
-          />
+          <Logo className="h-8 w-8 transition-transform duration-300 group-hover:scale-105" />
         </a>
 
         <nav className="hidden items-center gap-1 md:flex">

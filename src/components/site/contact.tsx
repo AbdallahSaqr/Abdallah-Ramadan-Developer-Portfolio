@@ -5,11 +5,13 @@ import { ArrowUpRight, Mail } from "lucide-react";
 import { SectionHeader } from "./section-header";
 import { site } from "@/lib/site-config";
 import { useT } from "@/components/providers/language-provider";
+import { useIsMobile } from "@/lib/use-is-mobile";
 
 const ease = [0.25, 0.4, 0.25, 1] as const;
 
 export function Contact() {
   const t = useT();
+  const isMobile = useIsMobile();
   return (
     <section
       id="contact"
@@ -25,14 +27,14 @@ export function Contact() {
         >
           <motion.div
             aria-hidden
-            animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.1, 1] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            animate={isMobile ? undefined : { opacity: [0.4, 0.7, 0.4], scale: [1, 1.1, 1] }}
+            transition={isMobile ? undefined : { duration: 8, repeat: Infinity, ease: "easeInOut" }}
             className="pointer-events-none absolute -left-40 -top-40 h-[28rem] w-[28rem] rounded-full bg-indigo-500/25 blur-3xl"
           />
           <motion.div
             aria-hidden
-            animate={{ opacity: [0.35, 0.65, 0.35], scale: [1, 1.15, 1] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            animate={isMobile ? undefined : { opacity: [0.35, 0.65, 0.35], scale: [1, 1.15, 1] }}
+            transition={isMobile ? undefined : { duration: 10, repeat: Infinity, ease: "easeInOut" }}
             className="pointer-events-none absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-rose-500/25 blur-3xl"
           />
 

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { SectionHeader } from "./section-header";
 import { useT } from "@/components/providers/language-provider";
+import { useIsMobile } from "@/lib/use-is-mobile";
 import { site } from "@/lib/site-config";
 
 const ease = [0.25, 0.4, 0.25, 1] as const;
@@ -20,6 +21,7 @@ const item = {
 
 export function About() {
   const t = useT();
+  const isMobile = useIsMobile();
   return (
     <section
       id="about"
@@ -42,8 +44,8 @@ export function About() {
           className="relative mx-auto w-full max-w-xs sm:max-w-sm"
         >
           <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            animate={isMobile ? undefined : { y: [0, -10, 0] }}
+            transition={isMobile ? undefined : { duration: 8, repeat: Infinity, ease: "easeInOut" }}
             className="relative"
           >
             <div className="absolute -inset-px rounded-[28px] bg-gradient-to-br from-indigo-400/40 via-foreground/10 to-rose-400/40 opacity-70 blur-md" />

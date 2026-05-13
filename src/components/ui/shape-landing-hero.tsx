@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { Circle } from "lucide-react";
 import type { ReactNode } from "react";
+import { useIsMobile } from "@/lib/use-is-mobile";
 import { cn } from "@/lib/utils";
 
 const fadeEase = [0.25, 0.4, 0.25, 1] as const;
@@ -23,6 +24,7 @@ function ElegantShape({
   rotate?: number;
   gradient?: string;
 }) {
+  const isMobile = useIsMobile();
   return (
     <motion.div
       initial={{
@@ -44,14 +46,12 @@ function ElegantShape({
       className={cn("absolute", className)}
     >
       <motion.div
-        animate={{
-          y: [0, 15, 0],
-        }}
-        transition={{
-          duration: 12,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "easeInOut",
-        }}
+        animate={isMobile ? undefined : { y: [0, 15, 0] }}
+        transition={
+          isMobile
+            ? undefined
+            : { duration: 12, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }
+        }
         style={{
           width,
           height,
