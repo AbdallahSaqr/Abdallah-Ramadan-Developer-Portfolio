@@ -15,7 +15,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
+      className="section-lazy relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
     >
       <div className="mx-auto max-w-5xl">
         <motion.div

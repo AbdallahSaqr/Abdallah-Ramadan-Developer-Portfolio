@@ -37,7 +37,7 @@ export function Skills() {
   return (
     <section
       id="skills"
-      className="relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
+      className="section-lazy relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
     >
       <SectionHeader
         index={t("skills.index")}

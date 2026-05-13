@@ -30,7 +30,7 @@ const dot = {
 export function Experience() {
   const t = useT();
   return (
-    <section className="relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40">
+    <section className="section-lazy relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40">
       <SectionHeader
         index={t("exp.index")}
         badge={t("exp.badge")}

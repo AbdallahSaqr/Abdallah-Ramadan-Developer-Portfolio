@@ -24,7 +24,7 @@ export function Work() {
   return (
     <section
       id="work"
-      className="relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
+      className="section-lazy relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
     >
       <SectionHeader
         index={t("work.index")}
