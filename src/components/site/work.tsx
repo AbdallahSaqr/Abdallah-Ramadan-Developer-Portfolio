@@ -62,7 +62,7 @@ function ProjectCard({
       href={p.url}
       target="_blank"
       rel="noreferrer noopener"
-      className="group relative block overflow-hidden rounded-3xl border border-foreground/[0.08] bg-foreground/[0.02] backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-foreground/15 hover:bg-foreground/[0.03] hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.4)]"
+      className="group relative block overflow-hidden rounded-3xl border border-foreground/[0.08] bg-foreground/[0.04] transition-all duration-500 hover:-translate-y-1 hover:border-foreground/15 hover:bg-foreground/[0.06] hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.4)]"
     >
       <div
         className={cn(
@@ -150,20 +150,8 @@ function LivePreview({
         src={screenshot}
         alt={`${title} preview`}
         loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover object-top"
+        className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
       />
-
-      {!preview && (
-        <iframe
-          src={url}
-          title={`${title} live preview`}
-          loading="lazy"
-          tabIndex={-1}
-          sandbox="allow-scripts allow-same-origin"
-          className="pointer-events-none absolute left-0 top-0 origin-top-left scale-[0.42] border-0"
-          style={{ width: "238%", height: "238%" }}
-        />
-      )}
 
       <div className="pointer-events-none absolute start-4 top-4 z-10 sm:start-5 sm:top-5">
         <span className="rounded-full border border-white/15 bg-black/50 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-white/85 backdrop-blur-md">

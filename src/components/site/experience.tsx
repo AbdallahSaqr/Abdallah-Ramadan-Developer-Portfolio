@@ -67,7 +67,7 @@ export function Experience() {
                 <span className="relative inline-block h-2 w-2 rounded-full bg-gradient-to-br from-indigo-300 to-rose-300" />
               </motion.span>
 
-              <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] p-5 backdrop-blur-md transition-colors duration-500 hover:bg-foreground/[0.04] sm:p-8">
+              <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.03] p-5 transition-colors duration-500 hover:bg-foreground/[0.05] sm:p-8">
                 <div className="grid gap-4 sm:grid-cols-[1fr_2fr]">
                   <div>
                     <div className="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-foreground/40">

@@ -49,7 +49,7 @@ export function About() {
             className="relative"
           >
             <div className="absolute -inset-px rounded-[28px] bg-gradient-to-br from-indigo-400/40 via-foreground/10 to-rose-400/40 opacity-70 blur-md" />
-            <div className="relative overflow-hidden rounded-[24px] border border-foreground/10 bg-foreground/[0.03] p-2 backdrop-blur-md">
+            <div className="relative overflow-hidden rounded-[24px] border border-foreground/10 bg-foreground/[0.05] p-2">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[18px]">
                 <Image
                   src="/abdallah.jpg"

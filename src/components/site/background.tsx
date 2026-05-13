@@ -17,7 +17,7 @@ export function Background() {
       {!isMobile && (
         <>
           <motion.div
-            className="absolute -top-40 left-[12%] h-[42rem] w-[42rem] rounded-full blur-3xl"
+            className="will-change-transform absolute -top-40 left-[12%] h-[42rem] w-[42rem] rounded-full blur-2xl"
             style={{
               background:
                 "radial-gradient(circle, rgba(99,102,241,0.18), transparent 60%)",
@@ -26,31 +26,13 @@ export function Background() {
             transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute bottom-[4%] right-[8%] h-[38rem] w-[38rem] rounded-full blur-3xl"
+            className="will-change-transform absolute bottom-[4%] right-[8%] h-[38rem] w-[38rem] rounded-full blur-2xl"
             style={{
               background:
                 "radial-gradient(circle, rgba(244,63,94,0.14), transparent 60%)",
             }}
             animate={{ x: [0, -50, 30, 0], y: [0, -40, 20, 0] }}
             transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-[55%] left-[4%] h-[30rem] w-[30rem] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(139,92,246,0.12), transparent 60%)",
-            }}
-            animate={{ x: [0, 40, -20, 0], y: [0, 20, -30, 0] }}
-            transition={{ duration: 36, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-[30%] right-[20%] h-[22rem] w-[22rem] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(245,158,11,0.08), transparent 60%)",
-            }}
-            animate={{ x: [0, -30, 40, 0], y: [0, -25, 15, 0] }}
-            transition={{ duration: 40, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       )}

@@ -43,7 +43,7 @@ function ElegantShape({
         ease: shapeEase,
         opacity: { duration: 1.2 },
       }}
-      className={cn("absolute", className)}
+      className={cn("will-change-transform absolute", className)}
     >
       <motion.div
         animate={isMobile ? undefined : { y: [0, 15, 0] }}
@@ -63,7 +63,7 @@ function ElegantShape({
             "absolute inset-0 rounded-full",
             "bg-gradient-to-r to-transparent",
             gradient,
-            "backdrop-blur-[2px] border-2 border-foreground/15",
+            "border-2 border-foreground/15",
             "shadow-[0_8px_32px_0_color-mix(in_srgb,var(--fg)_10%,transparent)]",
             "after:absolute after:inset-0 after:rounded-full",
             "after:bg-[radial-gradient(circle_at_50%_50%,color-mix(in_srgb,var(--fg)_20%,transparent),transparent_70%)]"
@@ -133,24 +133,6 @@ function HeroGeometric({
           rotate={-8}
           gradient="from-violet-500/[0.18]"
           className="bottom-[4%] left-[2%] md:bottom-[10%] md:left-[10%]"
-        />
-
-        <ElegantShape
-          delay={0.6}
-          width={200}
-          height={60}
-          rotate={20}
-          gradient="from-amber-500/[0.18]"
-          className="right-[10%] top-[8%] md:right-[20%] md:top-[15%]"
-        />
-
-        <ElegantShape
-          delay={0.7}
-          width={150}
-          height={40}
-          rotate={-25}
-          gradient="from-cyan-500/[0.18]"
-          className="left-[12%] top-[4%] md:left-[25%] md:top-[10%]"
         />
       </div>
 
