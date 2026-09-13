@@ -1,83 +1,11 @@
-<svg width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Signature gradient bumped to 500-level for light-bg legibility,
-         same hue family as the portfolio's pastel gradient -->
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8b5cf6"/>
-      <stop offset="50%" stop-color="#0ea5e9"/>
-      <stop offset="100%" stop-color="#d946ef"/>
-    </linearGradient>
-
-    <!-- Text gradient: ink → violet → sky -->
-    <linearGradient id="text-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#09090b"/>
-      <stop offset="60%" stop-color="#6d28d9"/>
-      <stop offset="100%" stop-color="#0284c7"/>
-    </linearGradient>
-
-    <!-- Hairline grid (dark on light) -->
-    <pattern id="hairlines" width="14" height="14" patternUnits="userSpaceOnUse">
-      <path d="M 14 0 L 0 0 0 14" fill="none"
-            stroke="#09090b" stroke-opacity="0.04" stroke-width="0.5"/>
-    </pattern>
-
-    <radialGradient id="halo" cx="50%" cy="45%" r="55%">
-      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.10"/>
-      <stop offset="60%" stop-color="#8b5cf6" stop-opacity="0.05"/>
-      <stop offset="100%" stop-color="#fafafa" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-
-  <!-- ── Card ── -->
-  <rect width="280" height="280" rx="14" fill="#fafafa"/>
-  <rect width="280" height="280" rx="14" fill="url(#hairlines)"/>
-  <rect width="280" height="280" fill="url(#halo)"/>
-  <rect x="0.5" y="0.5" width="279" height="279" rx="13.5"
-        fill="none" stroke="#09090b" stroke-opacity="0.12" stroke-width="1"/>
-
-  <!-- ── Corner ticks ── -->
-  <g stroke="#09090b" stroke-opacity="0.32" stroke-width="1" stroke-linecap="square">
-    <path d="M 16 16 L 24 16 M 16 16 L 16 24"/>
-    <path d="M 264 16 L 256 16 M 264 16 L 264 24"/>
-    <path d="M 16 264 L 24 264 M 16 264 L 16 256"/>
-    <path d="M 264 264 L 256 264 M 264 264 L 264 256"/>
-  </g>
-
-  <!-- ── AR monogram — Geist, tight, sharp ── -->
-  <text x="140" y="178"
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AR monogram">
+  <rect width="256" height="256" rx="10" fill="#17150f"/>
+  <text x="128" y="171"
         text-anchor="middle"
-        font-family="'Geist', 'Geist Sans', system-ui, -apple-system, sans-serif"
-        font-size="142"
-        font-weight="700"
-        letter-spacing="-9"
-        fill="url(#text-grad)">AR</text>
-
-  <!-- Sharp diagonal accent — top-right corner glyph -->
-  <line x1="208" y1="46" x2="244" y2="46"
-        stroke="url(#accent)" stroke-width="2" stroke-linecap="square"/>
-  <line x1="232" y1="34" x2="244" y2="46"
-        stroke="url(#accent)" stroke-width="2" stroke-linecap="square"/>
-  <line x1="244" y1="46" x2="244" y2="58"
-        stroke="url(#accent)" stroke-width="2" stroke-linecap="square"/>
-
-  <!-- Bottom hairline -->
-  <line x1="36" y1="222" x2="244" y2="222"
-        stroke="#09090b" stroke-opacity="0.14" stroke-width="1"/>
-
-  <!-- Index marker (left) -->
-  <text x="36" y="246"
-        font-family="'Geist Mono', ui-monospace, 'SF Mono', monospace"
-        font-size="9"
-        font-weight="500"
-        fill="#09090b" fill-opacity="0.55"
-        letter-spacing="2">01 / SAQR</text>
-
-  <!-- Role marker (right) -->
-  <text x="244" y="246"
-        text-anchor="end"
-        font-family="'Geist Mono', ui-monospace, 'SF Mono', monospace"
-        font-size="9"
-        font-weight="500"
-        fill="#09090b" fill-opacity="0.55"
-        letter-spacing="2">SOFTWARE ENG.</text>
+        font-family="'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif"
+        font-size="132"
+        font-weight="600"
+        letter-spacing="-8"
+        fill="#faf9f7">AR</text>
+  <rect x="40" y="200" width="176" height="6" fill="#d99a3a"/>
 </svg>

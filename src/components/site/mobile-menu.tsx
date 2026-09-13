@@ -2,15 +2,12 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "motion/react";
-import { ArrowUpRight, FileText, Menu, X } from "lucide-react";
+import { FileText, Menu, X } from "lucide-react";
 import { useT } from "@/components/providers/language-provider";
 import { site } from "@/lib/site-config";
-import { EASE } from "@/lib/motion";
 import { useIsMobile } from "@/lib/use-media-query";
 import { useMounted } from "@/lib/use-mounted";
 import { cn } from "@/lib/utils";
-import { Logo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
 import { LangToggle } from "./lang-toggle";
 
@@ -54,19 +51,18 @@ export function MobileMenuTrigger({ className }: { className?: string }) {
         aria-expanded={open}
         aria-controls={panelId}
         className={cn(
-          "inline-flex h-9 w-9 items-center justify-center rounded-full border border-foreground/10 bg-foreground/[0.03] text-foreground/70 transition-colors hover:border-foreground/25 hover:text-foreground md:hidden",
+          "inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-foreground/[0.05] hover:text-foreground md:hidden",
           className
         )}
       >
-        <Menu aria-hidden className="h-4 w-4" />
+        <Menu aria-hidden className="h-5 w-5" />
       </button>
 
       {mounted &&
         isMobile &&
+        open &&
         createPortal(
-          <AnimatePresence>
-            {open && <MobileMenuPanel id={panelId} onClose={close} />}
-          </AnimatePresence>,
+          <MobileMenuPanel id={panelId} onClose={close} />,
           document.body
         )}
     </>
@@ -119,92 +115,68 @@ function MobileMenuPanel({
   }, [onClose]);
 
   return (
-    <motion.div
+    <div
       ref={panelRef}
       id={id}
       role="dialog"
       aria-modal="true"
       aria-label={t("nav.primary")}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3, ease: EASE }}
       className="fixed inset-0 z-[100] flex flex-col bg-background"
     >
-      <div className="flex items-center justify-between px-5 pt-5">
-        <a
-          href="#hero"
-          onClick={onClose}
-          aria-label={t("nav.home")}
-          className="inline-flex items-center gap-2 rounded-full"
-        >
-          <Logo className="h-9 w-9" />
-        </a>
+      <div className="flex h-16 items-center justify-between border-b border-border px-6">
+        <span className="text-sm font-medium tracking-tight text-foreground">
+          {t("site.name")}
+        </span>
         <button
           type="button"
           data-autofocus
           onClick={onClose}
           aria-label={t("nav.close")}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-foreground/10 bg-foreground/[0.03] text-foreground/70 transition-colors hover:border-foreground/25 hover:text-foreground"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
         >
           <X aria-hidden className="h-5 w-5" />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <motion.nav
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
-          }}
-          className="mt-12 flex flex-col gap-1 px-6"
-        >
+      <nav className="flex-1 overflow-y-auto px-6 py-4">
+        <ul>
           {site.nav.map((item) => (
-            <motion.a
-              key={item.id}
-              href={item.href}
-              onClick={onClose}
-              variants={{
-                hidden: { opacity: 0, y: 16 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
-              }}
-              className="group flex items-center justify-between border-b border-foreground/[0.06] py-5 text-3xl font-bold tracking-tight text-foreground transition-colors hover:text-foreground/70 sm:text-4xl"
-            >
-              <span>{t(`nav.${item.id}`)}</span>
-              <ArrowUpRight
-                aria-hidden
-                className="rtl-flip h-5 w-5 text-foreground/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
-              />
-            </motion.a>
+            <li key={item.id}>
+              <a
+                href={item.href}
+                onClick={onClose}
+                className="block border-b border-border py-5 text-2xl font-medium tracking-tight text-foreground"
+              >
+                {t(`nav.${item.id}`)}
+              </a>
+            </li>
           ))}
+        </ul>
 
-          <a
-            href={site.resumeHref}
-            download
-            onClick={onClose}
-            className="group mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-foreground/60 transition-colors hover:text-foreground"
-          >
-            <FileText aria-hidden className="h-4 w-4" />
-            {t("nav.resume")}
-          </a>
-        </motion.nav>
-      </div>
+        <a
+          href={site.resumeHref}
+          download
+          onClick={onClose}
+          className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
+        >
+          <FileText aria-hidden className="h-4 w-4" />
+          {t("nav.resume")}
+        </a>
+      </nav>
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-foreground/[0.06] bg-background p-6">
-        <div className="flex gap-2">
+      <div className="flex items-center justify-between gap-3 border-t border-border px-6 py-5">
+        <div className="flex gap-1">
           <ThemeToggle />
           <LangToggle />
         </div>
         <a
           href={`mailto:${site.email}`}
           onClick={onClose}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-foreground px-5 text-sm font-medium text-background transition-transform hover:-translate-y-0.5"
+          className="inline-flex h-10 items-center rounded-md bg-foreground px-4 text-sm font-medium text-background"
         >
           {t("nav.cta")}
-          <ArrowUpRight aria-hidden className="rtl-flip h-4 w-4" />
         </a>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -25,18 +25,29 @@ describe("robots.txt", () => {
 });
 
 describe("sitemap.xml", () => {
-  it("lists one absolute URL per locale", () => {
+  it("lists every page in every locale", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       "https://abdallah.dev/en",
       "https://abdallah.dev/ar",
+      "https://abdallah.dev/en/privacy",
+      "https://abdallah.dev/ar/privacy",
+      "https://abdallah.dev/en/terms",
+      "https://abdallah.dev/ar/terms",
     ]);
   });
 
-  it("cross-links the locales with hreflang alternates", () => {
+  it("includes the legal pages required before launch", () => {
+    const urls = sitemap().map((entry) => entry.url);
+    expect(urls).toContain("https://abdallah.dev/en/privacy");
+    expect(urls).toContain("https://abdallah.dev/en/terms");
+  });
+
+  it("cross-links each page with its other-locale twin", () => {
     for (const entry of sitemap()) {
+      const path = entry.url.replace("https://abdallah.dev/en", "").replace("https://abdallah.dev/ar", "");
       expect(entry.alternates?.languages).toEqual({
-        en: "https://abdallah.dev/en",
-        ar: "https://abdallah.dev/ar",
+        en: `https://abdallah.dev/en${path}`,
+        ar: `https://abdallah.dev/ar${path}`,
       });
     }
   });
@@ -48,6 +59,6 @@ describe("sitemap.xml", () => {
   });
 
   it("covers every supported locale", () => {
-    expect(sitemap()).toHaveLength(locales.length);
+    expect(sitemap()).toHaveLength(locales.length * 3);
   });
 });

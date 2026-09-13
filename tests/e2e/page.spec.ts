@@ -207,3 +207,55 @@ test.describe("mobile menu", () => {
     );
   });
 });
+
+test.describe("house rules", () => {
+  test("renders no gradients or pill-shaped controls", async ({ page }) => {
+    await page.goto("/en");
+
+    const offenders = await page.evaluate(() => {
+      const found: string[] = [];
+      for (const element of Array.from(document.querySelectorAll("*"))) {
+        const style = getComputedStyle(element);
+        const background = `${style.backgroundImage} ${style.background}`;
+        if (background.includes("gradient")) {
+          found.push(`gradient: ${element.tagName}.${element.className}`);
+        }
+        const radius = Number.parseFloat(style.borderTopLeftRadius);
+        const height = element.getBoundingClientRect().height;
+        const isPill = radius >= height / 2 && height > 24 && radius > 12;
+        if (isPill && /^(A|BUTTON)$/.test(element.tagName)) {
+          found.push(`pill: ${element.tagName}.${element.className}`);
+        }
+      }
+      return found;
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
+  test("shows no em dash in any visible text", async ({ page }) => {
+    await page.goto("/en");
+    const text = await page.locator("body").innerText();
+    expect(text).not.toContain("\u2014");
+
+    await page.goto("/ar");
+    const arabic = await page.locator("body").innerText();
+    expect(arabic).not.toContain("\u2014");
+  });
+
+  test("runs no infinite animations", async ({ page }) => {
+    await page.goto("/en");
+    await page.waitForLoadState("networkidle");
+
+    const looping = await page.evaluate(
+      () =>
+        document
+          .getAnimations()
+          .filter(
+            (animation) => animation.effect?.getTiming().iterations === Infinity
+          ).length
+    );
+
+    expect(looping).toBe(0);
+  });
+});

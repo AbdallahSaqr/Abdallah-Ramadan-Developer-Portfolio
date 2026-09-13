@@ -23,7 +23,7 @@ const LanguageContext = createContext<Ctx | null>(null);
 
 /**
  * The locale comes from the route (`/en`, `/ar`), so there is no local state
- * here to drift out of sync with the URL — switching languages is a navigation.
+ * here to drift out of sync with the URL: switching languages is a navigation.
  */
 export function LanguageProvider({
   children,

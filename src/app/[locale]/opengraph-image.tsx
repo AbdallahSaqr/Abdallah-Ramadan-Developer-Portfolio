@@ -7,12 +7,12 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const alt = `${site.name} — ${site.role}`;
+export const alt = `${site.name}, ${site.role}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 /**
- * Social preview card, built as a real PNG — X, LinkedIn and WhatsApp ignore
+ * Social preview card, built as a real PNG because X, LinkedIn and WhatsApp ignore
  * SVG logos. Text stays English in both locales: the name is Latin script and
  * the renderer has no Arabic font bundled.
  */
@@ -27,9 +27,9 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "80px",
-          background:
-            "radial-gradient(circle at 20% 20%, #1e1b4b 0%, #030303 55%), #030303",
-          color: "#f4f4f5",
+          background: "#0d0c0b",
+          borderBottom: "16px solid #d99a3a",
+          color: "#f4f2ef",
           fontFamily: "sans-serif",
         }}
       >
@@ -39,7 +39,7 @@ export default function OpengraphImage() {
             fontSize: 26,
             letterSpacing: 6,
             textTransform: "uppercase",
-            color: "#a5b4fc",
+            color: "#d99a3a",
           }}
         >
           {site.location}
@@ -61,7 +61,7 @@ export default function OpengraphImage() {
             marginTop: 16,
             fontSize: 44,
             fontWeight: 600,
-            color: "#fda4af",
+            color: "#f4f2ef",
           }}
         >
           {site.role}
@@ -73,10 +73,10 @@ export default function OpengraphImage() {
             maxWidth: 900,
             fontSize: 30,
             lineHeight: 1.4,
-            color: "rgba(244,244,245,0.62)",
+            color: "#a8a29e",
           }}
         >
-          React · Next.js · Django · FastAPI
+          React, Next.js, Django, FastAPI
         </div>
       </div>
     ),

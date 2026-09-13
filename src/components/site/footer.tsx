@@ -1,28 +1,32 @@
 "use client";
 
-import { motion } from "motion/react";
-import { site } from "@/lib/site-config";
-import { useT } from "@/components/providers/language-provider";
-import { EASE } from "@/lib/motion";
+import { useLang } from "@/components/providers/language-provider";
 
 export function Footer() {
-  const t = useT();
+  const { lang, t } = useLang();
+
   return (
-    <footer className="relative border-t border-foreground/[0.06] px-5 py-10 sm:px-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: EASE }}
-        viewport={{ once: true, margin: "-50px" }}
-        className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 text-xs font-light tracking-wide text-foreground/50 sm:flex-row sm:items-center"
-      >
-        <div>
-          © {new Date().getFullYear()} {site.name}. {t("footer.built")}
-        </div>
-        <div className="font-mono uppercase tracking-widest">
-          {t("about.detail.location.value")}
-        </div>
-      </motion.div>
+    <footer className="border-t border-border px-6 py-10">
+      <div className="mx-auto flex max-w-5xl flex-col gap-4 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>
+          © {new Date().getFullYear()} {t("site.name")}. {t("footer.rights")}
+        </p>
+
+        <nav aria-label={t("footer.legal")} className="flex gap-6">
+          <a
+            href={`/${lang}/privacy`}
+            className="transition-colors hover:text-foreground"
+          >
+            {t("footer.privacy")}
+          </a>
+          <a
+            href={`/${lang}/terms`}
+            className="transition-colors hover:text-foreground"
+          >
+            {t("footer.terms")}
+          </a>
+        </nav>
+      </div>
     </footer>
   );
 }
