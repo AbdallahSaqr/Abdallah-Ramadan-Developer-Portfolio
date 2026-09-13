@@ -1,94 +1,153 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, FileText, Menu, X } from "lucide-react";
 import { useT } from "@/components/providers/language-provider";
 import { site } from "@/lib/site-config";
+import { EASE } from "@/lib/motion";
+import { useIsMobile } from "@/lib/use-media-query";
+import { useMounted } from "@/lib/use-mounted";
+import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
 import { LangToggle } from "./lang-toggle";
-import { cn } from "@/lib/utils";
 
-const ease = [0.25, 0.4, 0.25, 1] as const;
+const FOCUSABLE =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function MobileMenuTrigger({ className }: { className?: string }) {
-  const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [requestedOpen, setRequestedOpen] = useState(false);
+  const mounted = useMounted();
+  const isMobile = useIsMobile();
+
+  // Derived, not stored: widening past the md breakpoint hides the trigger, so
+  // the panel closes with it instead of leaving the page scroll locked.
+  const open = requestedOpen && isMobile;
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
   const t = useT();
 
-  useEffect(() => {
-    setMounted(true);
+  const close = useCallback(() => {
+    setRequestedOpen(false);
+    triggerRef.current?.focus();
   }, []);
 
+  // Lock background scrolling while the full-screen panel is open.
   useEffect(() => {
-    if (open) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = prev;
-      };
-    }
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
   }, [open]);
-
-  if (!mounted) return null;
 
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => setRequestedOpen(true)}
         aria-label={t("nav.menu")}
+        aria-expanded={open}
+        aria-controls={panelId}
         className={cn(
           "inline-flex h-9 w-9 items-center justify-center rounded-full border border-foreground/10 bg-foreground/[0.03] text-foreground/70 transition-colors hover:border-foreground/25 hover:text-foreground md:hidden",
           className
         )}
       >
-        <Menu className="h-4 w-4" />
+        <Menu aria-hidden className="h-4 w-4" />
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <MobilePortal>
-            <MobileMenuPanel onClose={() => setOpen(false)} />
-          </MobilePortal>
+      {mounted &&
+        isMobile &&
+        createPortal(
+          <AnimatePresence>
+            {open && <MobileMenuPanel id={panelId} onClose={close} />}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </>
   );
 }
 
-import { createPortal } from "react-dom";
-
-function MobilePortal({ children }: { children: React.ReactNode }) {
-  return createPortal(children, document.body);
-}
-
-function MobileMenuPanel({ onClose }: { onClose: () => void }) {
+function MobileMenuPanel({
+  id,
+  onClose,
+}: {
+  id: string;
+  onClose: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
   const t = useT();
+
+  // Move focus into the panel, and keep Tab cycling inside it while open.
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    panel.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const items = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (items.length === 0) return;
+
+      const first = items[0];
+      const last = items[items.length - 1];
+      const current = document.activeElement;
+
+      if (event.shiftKey && current === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && current === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
   return (
     <motion.div
+      ref={panelRef}
+      id={id}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("nav.primary")}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3, ease }}
-      className="fixed inset-0 z-[100] flex flex-col bg-background md:hidden"
+      transition={{ duration: 0.3, ease: EASE }}
+      className="fixed inset-0 z-[100] flex flex-col bg-background"
     >
       <div className="flex items-center justify-between px-5 pt-5">
         <a
           href="#hero"
           onClick={onClose}
-          className="inline-flex items-center gap-2"
+          aria-label={t("nav.home")}
+          className="inline-flex items-center gap-2 rounded-full"
         >
           <Logo className="h-9 w-9" />
         </a>
         <button
           type="button"
+          data-autofocus
           onClick={onClose}
           aria-label={t("nav.close")}
           className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-foreground/10 bg-foreground/[0.03] text-foreground/70 transition-colors hover:border-foreground/25 hover:text-foreground"
         >
-          <X className="h-5 w-5" />
+          <X aria-hidden className="h-5 w-5" />
         </button>
       </div>
 
@@ -108,18 +167,31 @@ function MobileMenuPanel({ onClose }: { onClose: () => void }) {
               onClick={onClose}
               variants={{
                 hidden: { opacity: 0, y: 16 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease } },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
               }}
               className="group flex items-center justify-between border-b border-foreground/[0.06] py-5 text-3xl font-bold tracking-tight text-foreground transition-colors hover:text-foreground/70 sm:text-4xl"
             >
               <span>{t(`nav.${item.id}`)}</span>
-              <ArrowUpRight className="h-5 w-5 text-foreground/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground rtl-flip" />
+              <ArrowUpRight
+                aria-hidden
+                className="rtl-flip h-5 w-5 text-foreground/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+              />
             </motion.a>
           ))}
+
+          <a
+            href={site.resumeHref}
+            download
+            onClick={onClose}
+            className="group mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-foreground/60 transition-colors hover:text-foreground"
+          >
+            <FileText aria-hidden className="h-4 w-4" />
+            {t("nav.resume")}
+          </a>
         </motion.nav>
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-foreground/[0.06] p-6 bg-background">
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-foreground/[0.06] bg-background p-6">
         <div className="flex gap-2">
           <ThemeToggle />
           <LangToggle />
@@ -130,7 +202,7 @@ function MobileMenuPanel({ onClose }: { onClose: () => void }) {
           className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-foreground px-5 text-sm font-medium text-background transition-transform hover:-translate-y-0.5"
         >
           {t("nav.cta")}
-          <ArrowUpRight className="h-4 w-4 rtl-flip" />
+          <ArrowUpRight aria-hidden className="rtl-flip h-4 w-4" />
         </a>
       </div>
     </motion.div>

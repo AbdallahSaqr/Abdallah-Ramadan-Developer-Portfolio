@@ -3,8 +3,7 @@
 import { motion } from "motion/react";
 import { site } from "@/lib/site-config";
 import { useT } from "@/components/providers/language-provider";
-
-const ease = [0.25, 0.4, 0.25, 1] as const;
+import { EASE } from "@/lib/motion";
 
 export function Footer() {
   const t = useT();
@@ -13,9 +12,9 @@ export function Footer() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease }}
+        transition={{ duration: 1, ease: EASE }}
         viewport={{ once: true, margin: "-50px" }}
-        className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 text-xs font-light tracking-wide text-foreground/40 sm:flex-row sm:items-center"
+        className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 text-xs font-light tracking-wide text-foreground/50 sm:flex-row sm:items-center"
       >
         <div>
           © {new Date().getFullYear()} {site.name}. {t("footer.built")}

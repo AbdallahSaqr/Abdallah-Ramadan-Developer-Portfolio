@@ -1,3 +1,16 @@
+import type { StaticImageData } from "next/image";
+import type { MessageKey } from "@/lib/i18n";
+import portrait from "@/assets/abdallah.jpg";
+import elaykaPreview from "@/assets/previews/elayka.png";
+import loopsPreview from "@/assets/previews/loops.png";
+import mernanPreview from "@/assets/previews/mernan.png";
+import obsidianPreview from "@/assets/previews/obsidian.png";
+import elaykaLogoDark from "@/assets/logos/elayka-dark.png";
+import elaykaLogoLight from "@/assets/logos/elayka-light.png";
+
+/** Portrait used in the About section and in structured data. */
+export const portraitImage = portrait;
+
 export const site = {
   name: "Abdallah Ramadan",
   shortName: "AR",
@@ -7,16 +20,17 @@ export const site = {
   email: "abdallahramadan2707@gmail.com",
   phone: "+201069100373",
   location: "Alexandria, Egypt",
-  resumeHref: "/New%20CV.pdf",
+  resumeHref: "/abdallah-ramadan-cv.pdf",
   socials: [
     { label: "GitHub", href: "https://github.com/AbdallahSaqr" },
     { label: "LinkedIn", href: "https://linkedin.com/in/abdallahramadan7" },
     { label: "Email", href: "mailto:abdallahramadan2707@gmail.com" },
   ],
+  // Document order — the nav highlight follows the page as you scroll.
   nav: [
+    { id: "about", href: "#about" },
     { id: "work", href: "#work" },
     { id: "skills", href: "#skills" },
-    { id: "about", href: "#about" },
     { id: "contact", href: "#contact" },
   ],
 } as const;
@@ -28,8 +42,12 @@ type Project = {
   title: string;
   domain: string;
   url: string;
-  preview?: string;
+  /** Statically imported screenshot: gives next/image dimensions + blur data. */
+  preview: StaticImageData;
+  /** Optional client wordmark, swapped by theme on the project card. */
+  logo?: { light: StaticImageData; dark: StaticImageData };
   stack: readonly string[];
+  /** Tailwind gradient stops for the card's ambient glow. */
   accent: string;
 };
 
@@ -39,7 +57,7 @@ export const projects: readonly Project[] = [
     title: "Mernan",
     domain: "mernan.sa",
     url: "https://www.mernan.sa/",
-    preview: "/previews/mernan.png",
+    preview: mernanPreview,
     stack: ["Next.js", "Supabase", "AWS S3", "i18next"],
     accent: "from-indigo-400/35 to-rose-300/15",
   },
@@ -48,7 +66,7 @@ export const projects: readonly Project[] = [
     title: "Loops",
     domain: "loops.sa",
     url: "https://www.loops.sa/en",
-    preview: "/previews/loops.png",
+    preview: loopsPreview,
     stack: ["Next.js", "FastAPI", "PostgreSQL", "Webhooks"],
     accent: "from-amber-300/30 to-indigo-400/15",
   },
@@ -57,7 +75,8 @@ export const projects: readonly Project[] = [
     title: "Elayka",
     domain: "elayka.net",
     url: "https://elayka.net",
-    preview: "/previews/elayka.png",
+    preview: elaykaPreview,
+    logo: { light: elaykaLogoLight, dark: elaykaLogoDark },
     stack: ["Django REST", "Next.js", "Zustand", "AWS S3"],
     accent: "from-rose-400/30 to-violet-400/20",
   },
@@ -66,7 +85,7 @@ export const projects: readonly Project[] = [
     title: "Obsidian Exchange",
     domain: "obsidianexchange.net",
     url: "https://obsidianexchange.net",
-    preview: "/previews/obsidian.png",
+    preview: obsidianPreview,
     stack: ["React", "Vite", "Tailwind", "Google Sheets"],
     accent: "from-violet-400/35 to-cyan-300/15",
   },
@@ -88,6 +107,7 @@ export const expertise: readonly {
       "Framer Motion",
       "Zustand",
       "i18next",
+      "Figma → Code",
     ],
   },
   {
@@ -97,6 +117,8 @@ export const expertise: readonly {
       "Django",
       "FastAPI",
       "Flask",
+      "Node.js",
+      "Express",
       "Odoo",
       "REST APIs",
       "JWT Auth",
@@ -129,11 +151,15 @@ export const expertise: readonly {
 
 export type ExperienceId = "mernan" | "csd" | "iti";
 
-export const experiences: readonly {
+/** Highlight bullets are referenced by message key so both locales stay in sync. */
+export const experiences = [
+  {
+    id: "mernan",
+    highlights: ["exp.mernan.h1", "exp.mernan.h2", "exp.mernan.h3"],
+  },
+  { id: "csd", highlights: ["exp.csd.h1", "exp.csd.h2"] },
+  { id: "iti", highlights: ["exp.iti.h1", "exp.iti.h2"] },
+] as const satisfies readonly {
   id: ExperienceId;
-  highlights: number;
-}[] = [
-  { id: "mernan", highlights: 3 },
-  { id: "csd", highlights: 2 },
-  { id: "iti", highlights: 2 },
-];
+  highlights: readonly MessageKey[];
+}[];

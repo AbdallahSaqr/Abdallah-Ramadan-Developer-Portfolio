@@ -1,33 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "motion/react";
-import { SectionHeader } from "./section-header";
+import { motion, useReducedMotion } from "motion/react";
 import { useT } from "@/components/providers/language-provider";
-import { useIsMobile } from "@/lib/use-is-mobile";
-import { site } from "@/lib/site-config";
+import { useIsMobile } from "@/lib/use-media-query";
+import { EASE, staggerChildren, VIEWPORT_ONCE } from "@/lib/motion";
+import { portraitImage, site } from "@/lib/site-config";
+import { SectionHeader } from "./section-header";
 
-const ease = [0.25, 0.4, 0.25, 1] as const;
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
-};
+const stagger = staggerChildren();
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
 };
 
 export function About() {
   const t = useT();
   const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
+  // The portrait's slow float is decorative: skip it on phones (battery) and
+  // whenever the visitor asked for reduced motion.
+  const float = !isMobile && !prefersReducedMotion;
+
   return (
     <section
       id="about"
-      className="section-lazy relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
+      aria-labelledby="about-title"
+      className="section-lazy relative scroll-mt-24 overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
     >
       <SectionHeader
+        id="about-title"
         index={t("about.index")}
         badge={t("about.badge")}
         title1={t("about.title1")}
@@ -39,27 +42,44 @@ export function About() {
         <motion.div
           initial={{ opacity: 0, y: 40, rotate: -2 }}
           whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-          transition={{ duration: 1.2, ease }}
-          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1.2, ease: EASE }}
+          viewport={VIEWPORT_ONCE}
           className="relative mx-auto w-full max-w-xs sm:max-w-sm"
         >
           <motion.div
-            animate={isMobile ? undefined : { y: [0, -10, 0] }}
-            transition={isMobile ? undefined : { duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            animate={float ? { y: [0, -10, 0] } : undefined}
+            transition={
+              float
+                ? { duration: 8, repeat: Infinity, ease: "easeInOut" }
+                : undefined
+            }
             className="relative"
           >
-            <div className="absolute -inset-px rounded-[28px] bg-gradient-to-br from-indigo-400/40 via-foreground/10 to-rose-400/40 opacity-70 blur-md" />
+            <div
+              aria-hidden
+              className="absolute -inset-px rounded-[28px] bg-gradient-to-br from-indigo-400/40 via-foreground/10 to-rose-400/40 opacity-70 blur-md"
+            />
             <div className="relative overflow-hidden rounded-[24px] border border-foreground/10 bg-foreground/[0.05] p-2">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[18px]">
+              {/* Frame follows the source photo's own ratio, so swapping the
+                  portrait never letterboxes or over-crops it. */}
+              <div
+                className="relative overflow-hidden rounded-[18px]"
+                style={{
+                  aspectRatio: `${portraitImage.width} / ${portraitImage.height}`,
+                }}
+              >
                 <Image
-                  src="/abdallah.jpg"
-                  alt={site.name}
+                  src={portraitImage}
+                  alt={`${site.name}, ${site.role}`}
                   fill
-                  sizes="(min-width: 1024px) 24rem, 80vw"
-                  priority
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 24rem, (min-width: 640px) 24rem, 80vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
+                />
               </div>
               <div className="flex items-center justify-between px-3 py-3">
                 <div>
@@ -70,8 +90,11 @@ export function About() {
                     {t("about.detail.location.value")}
                   </div>
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-widest text-emerald-300">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-widest text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300">
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-300"
+                  />
                   {t("about.available")}
                 </span>
               </div>
@@ -83,23 +106,20 @@ export function About() {
           variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={VIEWPORT_ONCE}
           className="space-y-6"
         >
           {([t("about.bio.1"), t("about.bio.2")] as const).map((para, i) => (
             <motion.p
               key={i}
               variants={item}
-              className="text-base font-light leading-relaxed tracking-wide text-foreground/55 sm:text-lg"
+              className="text-base font-light leading-relaxed tracking-wide text-foreground/60 sm:text-lg"
             >
               {para}
             </motion.p>
           ))}
 
-          <motion.div
-            variants={item}
-            className="grid gap-6 pt-6 sm:grid-cols-2"
-          >
+          <motion.dl variants={item} className="grid gap-6 pt-6 sm:grid-cols-2">
             <Detail
               label={t("about.detail.currently.label")}
               value={t("about.detail.currently.value")}
@@ -116,7 +136,7 @@ export function About() {
               label={t("about.detail.languages.label")}
               value={t("about.detail.languages.value")}
             />
-          </motion.div>
+          </motion.dl>
         </motion.div>
       </div>
     </section>
@@ -126,12 +146,12 @@ export function About() {
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="border-t border-foreground/[0.06] pt-4">
-      <div className="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-foreground/40">
+      <dt className="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-foreground/40">
         {label}
-      </div>
-      <div className="mt-1.5 text-sm font-light tracking-wide text-foreground/80">
+      </dt>
+      <dd className="mt-1.5 text-sm font-light tracking-wide text-foreground/80">
         {value}
-      </div>
+      </dd>
     </div>
   );
 }

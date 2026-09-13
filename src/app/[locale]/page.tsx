@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { Background } from "@/components/site/background";
 import { Nav } from "@/components/site/nav";
 import { Hero } from "@/components/site/hero";
@@ -7,13 +8,21 @@ import { Skills } from "@/components/site/skills";
 import { Experience } from "@/components/site/experience";
 import { Contact } from "@/components/site/contact";
 import { Footer } from "@/components/site/footer";
+import { HashScroll } from "@/components/site/hash-scroll";
+import { StructuredData } from "@/components/site/structured-data";
+import { isLocale } from "@/lib/i18n";
 
-export default function Page() {
+export default async function Page({ params }: PageProps<"/[locale]">) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+
   return (
     <>
+      <StructuredData locale={locale} />
+      <HashScroll />
       <Background />
       <Nav />
-      <main className="relative">
+      <main id="main" className="relative">
         <Hero />
         <About />
         <Work />

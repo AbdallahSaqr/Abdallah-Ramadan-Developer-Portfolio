@@ -1,5 +1,6 @@
 "use client";
 
+import { MotionConfig } from "motion/react";
 import { ThemeProvider as NextThemes } from "next-themes";
 import { LanguageProvider } from "./language-provider";
 import type { Locale } from "@/lib/i18n";
@@ -14,11 +15,15 @@ export function Providers({
   return (
     <NextThemes
       attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
+      defaultTheme="system"
+      enableSystem
       disableTransitionOnChange
     >
-      <LanguageProvider initialLang={lang}>{children}</LanguageProvider>
+      {/* `reducedMotion="user"` drops transform/layout animations for visitors
+          who ask for less motion (WCAG 2.3.3) without extra code per component. */}
+      <MotionConfig reducedMotion="user">
+        <LanguageProvider lang={lang}>{children}</LanguageProvider>
+      </MotionConfig>
     </NextThemes>
   );
 }
