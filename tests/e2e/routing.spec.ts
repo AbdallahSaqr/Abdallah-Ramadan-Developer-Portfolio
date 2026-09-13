@@ -39,9 +39,8 @@ test.describe("locale routing", () => {
     await page.goto("/ar");
 
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "مطوّر"
-    );
+    await expect(page.getByText("مهندس برمجيات فول-ستاك").first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "تصفّح الأعمال" })).toBeVisible();
   });
 
   test("404s on an unsupported locale", async ({ page }) => {
