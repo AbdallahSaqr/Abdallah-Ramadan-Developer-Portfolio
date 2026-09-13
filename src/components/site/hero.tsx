@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, FileText } from "lucide-react";
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 import { buttonVariants } from "@/components/ui/button";
 import { useT } from "@/components/providers/language-provider";
@@ -22,14 +22,22 @@ export function Hero() {
             className={cn(buttonVariants({ variant: "primary", size: "lg" }))}
           >
             {t("hero.cta.work")}
-            <ArrowDownRight className="rtl-flip" />
+            <ArrowDownRight aria-hidden className="rtl-flip" />
           </a>
           <a
             href={`mailto:${site.email}`}
             className={cn(buttonVariants({ variant: "glass", size: "lg" }))}
           >
             {t("hero.cta.contact")}
-            <ArrowUpRight className="rtl-flip" />
+            <ArrowUpRight aria-hidden className="rtl-flip" />
+          </a>
+          <a
+            href={site.resumeHref}
+            download
+            className={cn(buttonVariants({ variant: "ghost", size: "lg" }))}
+          >
+            <FileText aria-hidden />
+            {t("hero.cta.resume")}
           </a>
         </>
       }

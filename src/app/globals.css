@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Class-based dark mode (default v4 is media-query based) */
+/* Class-based dark mode (Tailwind v4 defaults to the media query). */
 @variant dark (&:where(.dark, .dark *));
 
 @theme inline {
@@ -17,6 +17,8 @@
   --fg: #0a0a0a;
   --surface: rgba(0, 0, 0, 0.03);
   --border-color: rgba(0, 0, 0, 0.08);
+  --selection-bg: rgba(99, 102, 241, 0.25);
+  --selection-fg: #0a0a0a;
   color-scheme: light;
 }
 
@@ -25,11 +27,15 @@
   --fg: #f4f4f5;
   --surface: rgba(255, 255, 255, 0.04);
   --border-color: rgba(255, 255, 255, 0.08);
+  --selection-bg: rgba(196, 181, 253, 0.35);
+  --selection-fg: #ffffff;
   color-scheme: dark;
 }
 
 html {
   scroll-behavior: smooth;
+  /* Keeps anchored sections clear of the fixed header. */
+  scroll-padding-top: 6rem;
 }
 
 html,
@@ -50,14 +56,21 @@ body {
     "Segoe UI", system-ui, sans-serif;
 }
 
-::selection {
-  background: rgba(196, 181, 253, 0.35);
-  color: white;
+h1,
+h2 {
+  text-wrap: balance;
 }
 
-.dark ::selection {
-  background: rgba(196, 181, 253, 0.35);
-  color: white;
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+/* Every interactive element gets a visible keyboard focus ring. */
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--fg) 65%, transparent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 * {
@@ -76,52 +89,36 @@ body {
   border-radius: 999px;
 }
 
-@utility glass {
-  background-color: var(--surface);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid var(--border-color);
-}
-
-@utility glass-strong {
-  background-color: color-mix(in srgb, var(--fg) 6%, transparent);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
-}
-
-@utility text-gradient-accent {
-  background: linear-gradient(
-    110deg,
-    var(--fg) 0%,
-    #6366f1 35%,
-    var(--fg) 70%,
-    #f43f5e 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* RTL flip for icons that point in a reading direction */
+/* Flips icons that point along the reading direction. */
 [dir="rtl"] .rtl-flip {
   transform: scaleX(-1);
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@utility animate-marquee {
-  animation: marquee 40s linear infinite;
-}
-
+/*
+ * Defers rendering work for off-screen sections. `auto` makes the browser
+ * remember each section's last rendered height, so the scrollbar stops
+ * jumping once a section has been seen; 1200px is the first-pass estimate.
+ */
 @utility section-lazy {
   content-visibility: auto;
-  contain-intrinsic-size: 1px 500px;
+  contain-intrinsic-size: auto 1200px;
+}
+
+/*
+ * Reduced motion (WCAG 2.3.3). Motion One handles its own animations via
+ * MotionConfig; this covers CSS animations, transitions and smooth scrolling.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

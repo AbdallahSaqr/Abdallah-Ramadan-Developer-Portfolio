@@ -1,13 +1,22 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Circle } from "lucide-react";
 import type { ReactNode } from "react";
-import { useIsMobile } from "@/lib/use-is-mobile";
+import { useIsMobile } from "@/lib/use-media-query";
+import { EASE, EASE_SHAPE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const fadeEase = [0.25, 0.4, 0.25, 1] as const;
-const shapeEase = [0.23, 0.86, 0.39, 0.96] as const;
+type ShapeProps = {
+  className?: string;
+  delay?: number;
+  width?: number;
+  height?: number;
+  rotate?: number;
+  gradient?: string;
+  /** Whether the slow idle float should run (off on mobile / reduced motion). */
+  float: boolean;
+};
 
 function ElegantShape({
   className,
@@ -16,46 +25,28 @@ function ElegantShape({
   height = 100,
   rotate = 0,
   gradient = "from-foreground/[0.08]",
-}: {
-  className?: string;
-  delay?: number;
-  width?: number;
-  height?: number;
-  rotate?: number;
-  gradient?: string;
-}) {
-  const isMobile = useIsMobile();
+  float,
+}: ShapeProps) {
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: -150,
-        rotate: rotate - 15,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        rotate: rotate,
-      }}
+      initial={{ opacity: 0, y: -150, rotate: rotate - 15 }}
+      animate={{ opacity: 1, y: 0, rotate }}
       transition={{
         duration: 2.4,
         delay,
-        ease: shapeEase,
+        ease: EASE_SHAPE,
         opacity: { duration: 1.2 },
       }}
-      className={cn("will-change-transform absolute", className)}
+      className={cn("absolute will-change-transform", className)}
     >
       <motion.div
-        animate={isMobile ? undefined : { y: [0, 15, 0] }}
+        animate={float ? { y: [0, 15, 0] } : undefined}
         transition={
-          isMobile
-            ? undefined
-            : { duration: 12, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }
+          float
+            ? { duration: 12, repeat: Infinity, ease: "easeInOut" }
+            : undefined
         }
-        style={{
-          width,
-          height,
-        }}
+        style={{ width, height }}
         className="relative"
       >
         <div
@@ -74,66 +65,74 @@ function ElegantShape({
   );
 }
 
-function HeroGeometric({
-  badge = "Design Collective",
-  title1 = "Elevate Your Digital Vision",
-  title2 = "Crafting Exceptional Websites",
-  description = "Crafting exceptional digital experiences through innovative design and cutting-edge technology.",
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, delay: 0.5 + i * 0.2, ease: EASE },
+  }),
+};
+
+const SHAPES = [
+  {
+    delay: 0.3,
+    width: 600,
+    height: 140,
+    rotate: 12,
+    gradient: "from-indigo-500/[0.18]",
+    className: "left-[-15%] top-[12%] md:left-[-5%] md:top-[20%]",
+  },
+  {
+    delay: 0.5,
+    width: 500,
+    height: 120,
+    rotate: -15,
+    gradient: "from-rose-500/[0.18]",
+    className: "right-[-15%] top-[68%] md:right-[0%] md:top-[75%]",
+  },
+  {
+    delay: 0.4,
+    width: 300,
+    height: 80,
+    rotate: -8,
+    gradient: "from-violet-500/[0.18]",
+    className: "bottom-[4%] left-[2%] md:bottom-[10%] md:left-[10%]",
+  },
+] as const;
+
+export function HeroGeometric({
+  badge,
+  title1,
+  title2,
+  description,
   actions,
 }: {
-  badge?: string;
-  title1?: string;
-  title2?: string;
-  description?: string;
+  badge: string;
+  title1: string;
+  title2: string;
+  description: string;
   actions?: ReactNode;
 }) {
-  const fadeUpVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 1,
-        delay: 0.5 + i * 0.2,
-        ease: fadeEase,
-      },
-    }),
-  };
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
+  const float = !isMobile && !prefersReducedMotion;
 
   return (
-    <div
+    <section
       id="hero"
-      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-background scroll-mt-24"
+      aria-labelledby="hero-title"
+      className="relative flex min-h-[100svh] w-full scroll-mt-24 items-center justify-center overflow-hidden bg-background"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.06] via-transparent to-rose-500/[0.06] blur-3xl" />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.06] via-transparent to-rose-500/[0.06] blur-3xl"
+      />
 
-      <div className="absolute inset-0 overflow-hidden">
-        <ElegantShape
-          delay={0.3}
-          width={600}
-          height={140}
-          rotate={12}
-          gradient="from-indigo-500/[0.18]"
-          className="left-[-15%] top-[12%] md:left-[-5%] md:top-[20%]"
-        />
-
-        <ElegantShape
-          delay={0.5}
-          width={500}
-          height={120}
-          rotate={-15}
-          gradient="from-rose-500/[0.18]"
-          className="right-[-15%] top-[68%] md:right-[0%] md:top-[75%]"
-        />
-
-        <ElegantShape
-          delay={0.4}
-          width={300}
-          height={80}
-          rotate={-8}
-          gradient="from-violet-500/[0.18]"
-          className="bottom-[4%] left-[2%] md:bottom-[10%] md:left-[10%]"
-        />
+      <div aria-hidden className="absolute inset-0 overflow-hidden">
+        {SHAPES.map((shape) => (
+          <ElegantShape key={shape.className} {...shape} float={float} />
+        ))}
       </div>
 
       <div className="container relative z-10 mx-auto px-4 md:px-6">
@@ -145,7 +144,7 @@ function HeroGeometric({
             animate="visible"
             className="mb-8 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.03] px-3 py-1 md:mb-12"
           >
-            <Circle className="h-2 w-2 fill-rose-500/80 stroke-none" />
+            <Circle aria-hidden className="h-2 w-2 fill-rose-500/80 stroke-none" />
             <span className="text-xs tracking-wide text-foreground/60 sm:text-sm">
               {badge}
             </span>
@@ -157,7 +156,10 @@ function HeroGeometric({
             initial="hidden"
             animate="visible"
           >
-            <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:mb-8 md:text-7xl lg:text-8xl">
+            <h1
+              id="hero-title"
+              className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:mb-8 md:text-7xl lg:text-8xl"
+            >
               <span className="bg-gradient-to-b from-foreground to-foreground/80 bg-clip-text text-transparent">
                 {title1}
               </span>
@@ -174,7 +176,7 @@ function HeroGeometric({
             initial="hidden"
             animate="visible"
           >
-            <p className="mx-auto mb-8 max-w-xl px-2 text-sm font-light leading-relaxed tracking-wide text-foreground/50 sm:text-base md:px-4 md:text-lg">
+            <p className="mx-auto mb-8 max-w-xl px-2 text-sm font-light leading-relaxed tracking-wide text-foreground/60 sm:text-base md:px-4 md:text-lg">
               {description}
             </p>
           </motion.div>
@@ -193,9 +195,10 @@ function HeroGeometric({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/80" />
-    </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/80"
+      />
+    </section>
   );
 }
-
-export { HeroGeometric };

@@ -1,48 +1,60 @@
 "use client";
 
+import { createContext, useCallback, useContext, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { messages, type Locale } from "@/lib/i18n";
+  LOCALE_COOKIE,
+  messages,
+  type Locale,
+  type MessageKey,
+} from "@/lib/i18n";
+
+const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
 
 type Ctx = {
   lang: Locale;
+  dir: "rtl" | "ltr";
+  /** Navigates to the other locale's page and remembers the choice. */
   setLang: (l: Locale) => void;
-  t: (key: string) => string;
+  t: (key: MessageKey) => string;
 };
 
 const LanguageContext = createContext<Ctx | null>(null);
 
+/**
+ * The locale comes from the route (`/en`, `/ar`), so there is no local state
+ * here to drift out of sync with the URL — switching languages is a navigation.
+ */
 export function LanguageProvider({
   children,
-  initialLang,
+  lang,
 }: {
   children: React.ReactNode;
-  initialLang: Locale;
+  lang: Locale;
 }) {
-  const [lang, setLangState] = useState<Locale>(initialLang);
+  const router = useRouter();
+  const dir = lang === "ar" ? "rtl" : "ltr";
 
-  useEffect(() => {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  }, [lang]);
-
-  const setLang = useCallback((l: Locale) => {
-    setLangState(l);
-    document.cookie = `lang=${l}; path=/; max-age=31536000; samesite=lax`;
-  }, []);
+  const setLang = useCallback(
+    (next: Locale) => {
+      // Remembered so a later visit to `/` lands on the right locale.
+      const secure = window.location.protocol === "https:" ? "; secure" : "";
+      document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${ONE_YEAR_SECONDS}; samesite=lax${secure}`;
+      // `scroll: false` keeps the reader where they were in the page.
+      router.push(`/${next}`, { scroll: false });
+    },
+    [router]
+  );
 
   const t = useCallback(
-    (key: string) => messages[lang]?.[key] ?? messages.en[key] ?? key,
+    (key: MessageKey) => messages[lang][key] ?? messages.en[key],
     [lang]
   );
 
-  const value = useMemo<Ctx>(() => ({ lang, setLang, t }), [lang, setLang, t]);
+  const value = useMemo<Ctx>(
+    () => ({ lang, dir, setLang, t }),
+    [lang, dir, setLang, t]
+  );
 
   return (
     <LanguageContext.Provider value={value}>

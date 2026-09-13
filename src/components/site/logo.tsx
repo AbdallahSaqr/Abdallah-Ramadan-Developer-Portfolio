@@ -1,34 +1,33 @@
-"use client";
-
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
+const SIZE = 64;
+
 /**
- * Theme-aware brand logo.
- * Dark variant shows in dark mode (via .dark class on <html>);
- * light variant shows otherwise. Rendered as a circle.
+ * Decorative brand mark — the dark variant shows under `.dark`, the light one
+ * otherwise. Purely a CSS swap, so there is no theme flash on first paint.
  *
- * Pure CSS swap — no JS, no hydration flicker (next-themes injects
- * the .dark class before paint).
+ * Both images are `aria-hidden`: whatever wraps the logo (a link, a button)
+ * owns the accessible name.
  */
 export function Logo({ className }: { className?: string }) {
   return (
     <>
-      <img
+      <Image
         src="/abdallah-saqr-logo.svg"
-        alt="Abdallah Ramadan logo"
+        alt=""
         aria-hidden
-        className={cn(
-          "hidden rounded-full object-cover dark:block",
-          className
-        )}
+        width={SIZE}
+        height={SIZE}
+        className={cn("hidden rounded-full object-cover dark:block", className)}
       />
-      <img
+      <Image
         src="/abdallah-saqr-logo-light.svg"
-        alt="Abdallah Ramadan logo"
-        className={cn(
-          "block rounded-full object-cover dark:hidden",
-          className
-        )}
+        alt=""
+        aria-hidden
+        width={SIZE}
+        height={SIZE}
+        className={cn("block rounded-full object-cover dark:hidden", className)}
       />
     </>
   );

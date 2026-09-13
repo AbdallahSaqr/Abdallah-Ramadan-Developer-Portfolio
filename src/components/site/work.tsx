@@ -1,22 +1,19 @@
 "use client";
 
+import Image, { type StaticImageData } from "next/image";
 import { motion } from "motion/react";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
-import { SectionHeader } from "./section-header";
 import { projects } from "@/lib/site-config";
 import { useT } from "@/components/providers/language-provider";
+import { EASE, staggerChildren } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { SectionHeader } from "./section-header";
 
-const ease = [0.25, 0.4, 0.25, 1] as const;
-
-const list = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.18, delayChildren: 0.15 } },
-};
+const list = staggerChildren(0.18, 0.15);
 
 const card = {
   hidden: { opacity: 0, y: 50, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 1, ease } },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 1, ease: EASE } },
 };
 
 export function Work() {
@@ -24,9 +21,11 @@ export function Work() {
   return (
     <section
       id="work"
-      className="section-lazy relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
+      aria-labelledby="work-title"
+      className="section-lazy relative scroll-mt-24 overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
     >
       <SectionHeader
+        id="work-title"
         index={t("work.index")}
         badge={t("work.badge")}
         title1={t("work.title1")}
@@ -51,11 +50,7 @@ export function Work() {
   );
 }
 
-function ProjectCard({
-  project: p,
-}: {
-  project: (typeof projects)[number];
-}) {
+function ProjectCard({ project: p }: { project: (typeof projects)[number] }) {
   const t = useT();
   return (
     <a
@@ -65,25 +60,26 @@ function ProjectCard({
       className="group relative block overflow-hidden rounded-3xl border border-foreground/[0.08] bg-foreground/[0.04] transition-all duration-500 hover:-translate-y-1 hover:border-foreground/15 hover:bg-foreground/[0.06] hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.4)]"
     >
       <div
+        aria-hidden
         className={cn(
-          "pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-gradient-to-br blur-3xl opacity-30 transition-opacity duration-500 group-hover:opacity-70",
+          "pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-gradient-to-br opacity-30 blur-3xl transition-opacity duration-500 group-hover:opacity-70",
           p.accent
         )}
       />
 
       <div className="relative grid items-stretch md:grid-cols-[1.35fr_1fr]">
-        <LivePreview
-          url={p.url}
+        <Preview
+          image={p.preview}
           title={p.title}
           tag={t(`projects.${p.id}.tag`)}
           liveLabel={t("work.live")}
-          preview={p.preview}
         />
 
         <div className="relative flex flex-col justify-between gap-6 p-5 sm:gap-8 sm:p-8 md:p-10">
           <div>
+            {p.logo ? <ProjectLogo logo={p.logo} title={p.title} /> : null}
             <div className="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.3em] text-foreground/40">
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink aria-hidden className="h-3 w-3" />
               {p.domain}
             </div>
             <h3 className="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
@@ -110,7 +106,10 @@ function ProjectCard({
             <span className="bg-gradient-to-r from-indigo-400 via-foreground to-rose-400 bg-clip-text text-transparent">
               {t("work.visit")}
             </span>
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl-flip" />
+            <ArrowUpRight
+              aria-hidden
+              className="rtl-flip h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
           </div>
         </div>
       </div>
@@ -118,39 +117,60 @@ function ProjectCard({
   );
 }
 
-function LivePreview({
-  url,
+/**
+ * Client wordmark shown above the project title. The source files are square
+ * with generous padding, so the box crops to the wordmark band via object-cover
+ * (44% keeps the mark centred and drops the sub-line, unreadable at this size);
+ * the variants swap on `.dark` in CSS, which avoids a theme flash.
+ */
+function ProjectLogo({
+  logo,
+  title,
+}: {
+  logo: NonNullable<(typeof projects)[number]["logo"]>;
+  title: string;
+}) {
+  return (
+    <div className="relative mb-4 h-8 w-24 overflow-hidden sm:h-9 sm:w-28">
+      <Image
+        src={logo.light}
+        alt={`${title} logo`}
+        fill
+        sizes="7rem"
+        className="object-cover object-[center_44%] dark:hidden"
+      />
+      <Image
+        src={logo.dark}
+        alt=""
+        aria-hidden
+        fill
+        sizes="7rem"
+        className="hidden object-cover object-[center_44%] dark:block"
+      />
+    </div>
+  );
+}
+
+function Preview({
+  image,
   title,
   tag,
   liveLabel,
-  preview,
 }: {
-  url: string;
+  image: StaticImageData;
   title: string;
   tag: string;
   liveLabel: string;
-  preview?: string;
 }) {
-  const params = new URLSearchParams({
-    url,
-    screenshot: "true",
-    meta: "false",
-    embed: "screenshot.url",
-    "viewport.width": "1440",
-    "viewport.height": "900",
-    "viewport.deviceScaleFactor": "1",
-    waitUntil: "networkidle0",
-    type: "jpeg",
-  });
-  const screenshot = preview ?? `https://api.microlink.io/?${params.toString()}`;
-
   return (
     <div className="relative aspect-[16/10] overflow-hidden bg-foreground/[0.04] md:aspect-auto md:min-h-[20rem] lg:min-h-[22rem]">
-      <img
-        src={screenshot}
-        alt={`${title} preview`}
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+      <Image
+        src={image}
+        alt={`${title} — screenshot of the live site`}
+        fill
+        placeholder="blur"
+        sizes="(min-width: 1024px) 660px, (min-width: 768px) 55vw, 100vw"
+        className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
       />
 
       <div className="pointer-events-none absolute start-4 top-4 z-10 sm:start-5 sm:top-5">
@@ -160,8 +180,8 @@ function LivePreview({
       </div>
 
       <div className="pointer-events-none absolute end-4 top-4 z-10 sm:end-5 sm:top-5">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-widest text-emerald-300 backdrop-blur-md">
-          <span className="relative flex h-1.5 w-1.5">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-widest text-emerald-200 backdrop-blur-md">
+          <span aria-hidden className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
           </span>
@@ -169,7 +189,10 @@ function LivePreview({
         </span>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/30 via-transparent to-black/10" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/30 via-transparent to-black/10"
+      />
     </div>
   );
 }
