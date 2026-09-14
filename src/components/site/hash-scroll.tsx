@@ -11,7 +11,7 @@ const CHECK_INTERVAL_MS = 100;
  *
  * Sections opt into `content-visibility: auto`, so their real heights are not
  * known when the browser performs its one-shot scroll to the anchor on a cold
- * load, and the router restores scroll after hydration, so a shared link like
+ * load, and the router restores scroll after hydration — a shared link like
  * `/en#work` would otherwise land at the top of the page. This re-scrolls
  * whenever the target moves (images decoding, webfonts swapping in) until the
  * layout stops shifting, and gets out of the way the moment the visitor

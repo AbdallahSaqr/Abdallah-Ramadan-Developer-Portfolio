@@ -1,6 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { About } from "@/components/site/about";
+import { Background } from "@/components/site/background";
 import { Contact } from "@/components/site/contact";
 import { Experience } from "@/components/site/experience";
 import { Footer } from "@/components/site/footer";
@@ -11,30 +12,18 @@ import { Work } from "@/components/site/work";
 import { messages } from "@/lib/i18n";
 import { expertise, experiences, projects, site } from "@/lib/site-config";
 import { renderWithProviders } from "../../utils";
+import { mediaMatches } from "../../setup";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
 }));
 
 describe("Hero", () => {
-  it("puts the engineer's name in the h1", () => {
+  it("shows the headline as the page's h1", () => {
     renderWithProviders(<Hero />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      messages.en["site.name"]
+      messages.en["hero.title1"]
     );
-  });
-
-  it("shows the name in Arabic script on the Arabic page", () => {
-    renderWithProviders(<Hero />, { lang: "ar" });
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      messages.ar["site.name"]
-    );
-  });
-
-  it("states the role and a concrete summary of the work", () => {
-    renderWithProviders(<Hero />);
-    expect(screen.getByText(messages.en["hero.role"])).toBeInTheDocument();
-    expect(screen.getByText(messages.en["hero.lead"])).toBeInTheDocument();
   });
 
   it("offers work, contact and resume actions", () => {
@@ -52,7 +41,9 @@ describe("Hero", () => {
 
   it("translates the hero copy", () => {
     renderWithProviders(<Hero />, { lang: "ar" });
-    expect(screen.getByText(messages.ar["hero.lead"])).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      messages.ar["hero.title1"]
+    );
   });
 });
 
@@ -64,7 +55,7 @@ describe("About", () => {
       "about-title"
     );
     expect(document.getElementById("about-title")).toHaveTextContent(
-      messages.en["about.title"]
+      messages.en["about.title1"]
     );
   });
 
@@ -128,7 +119,7 @@ describe("Work", () => {
     for (const project of projects) {
       expect(
         screen.getByRole("img", {
-          name: `${project.title}: screenshot of the live site`,
+          name: `${project.title} — screenshot of the live site`,
         })
       ).toBeInTheDocument();
     }
@@ -194,7 +185,7 @@ describe("Contact", () => {
   it("links the email and phone", () => {
     renderWithProviders(<Contact />);
     expect(
-      screen.getByRole("link", { name: site.email })
+      screen.getByRole("link", { name: new RegExp(site.email) })
     ).toHaveAttribute("href", `mailto:${site.email}`);
     expect(screen.getByRole("link", { name: site.phone })).toHaveAttribute(
       "href",
@@ -212,6 +203,13 @@ describe("Contact", () => {
       expect(link.getAttribute("rel")).toContain("noopener");
     }
   });
+
+  it("does not open the mailto social in a new tab", () => {
+    renderWithProviders(<Contact />);
+    expect(screen.getByRole("link", { name: /^Email/ })).not.toHaveAttribute(
+      "target"
+    );
+  });
 });
 
 describe("Footer", () => {
@@ -220,16 +218,6 @@ describe("Footer", () => {
     expect(
       screen.getByText(new RegExp(`${new Date().getFullYear()}\\s+${site.name}`))
     ).toBeInTheDocument();
-  });
-
-  it("links the legal pages for the active locale", () => {
-    renderWithProviders(<Footer />, { lang: "ar" });
-    expect(
-      screen.getByRole("link", { name: messages.ar["footer.privacy"] })
-    ).toHaveAttribute("href", "/ar/privacy");
-    expect(
-      screen.getByRole("link", { name: messages.ar["footer.terms"] })
-    ).toHaveAttribute("href", "/ar/terms");
   });
 });
 
@@ -240,19 +228,40 @@ describe("SectionHeader", () => {
         id="demo-title"
         index="09"
         badge="Demo"
-        title="A concrete heading."
+        title1="First"
+        title2="Second"
       />
     );
     const heading = screen.getByRole("heading", { level: 2 });
 
     expect(heading).toHaveAttribute("id", "demo-title");
-    expect(heading).toHaveTextContent("A concrete heading.");
+    expect(heading).toHaveTextContent("FirstSecond");
   });
 
-  it("shows the index and label above the heading", () => {
-    renderWithProviders(
-      <SectionHeader index="09" badge="Demo" title="Heading" />
+  it("works without a second title line", () => {
+    renderWithProviders(<SectionHeader index="01" badge="Demo" title1="Only" />);
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("Only");
+  });
+});
+
+describe("Background", () => {
+  it("is hidden from assistive technology", () => {
+    const { container } = renderWithProviders(<Background />);
+    const root = container.querySelector("div.fixed");
+
+    expect(root).toHaveAttribute("aria-hidden");
+    expect(root?.className).toContain("pointer-events-none");
+  });
+
+  it("renders the decorative blobs on both mobile and desktop", () => {
+    const { container, unmount } = renderWithProviders(<Background />);
+    expect(container.querySelectorAll("div.rounded-full")).toHaveLength(2);
+    unmount();
+
+    mediaMatches.set("(max-width: 767px)", true);
+    const mobile = renderWithProviders(<Background />);
+    expect(mobile.container.querySelectorAll("div.rounded-full")).toHaveLength(
+      2
     );
-    expect(screen.getByText(/09\s+Demo/)).toBeInTheDocument();
   });
 });

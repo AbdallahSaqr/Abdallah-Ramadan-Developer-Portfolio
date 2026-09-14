@@ -2,7 +2,7 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 
-/** Tailwind `md`. Below this we treat the viewport as mobile. */
+/** Tailwind `md` — below this we treat the viewport as mobile. */
 const MOBILE_BREAKPOINT = 768;
 
 /**
@@ -11,8 +11,8 @@ const MOBILE_BREAKPOINT = 768;
  * Uses `useSyncExternalStore` so the value is read during render instead of
  * being written back into state from an effect (which triggers a cascading
  * re-render and is flagged by `react-hooks/set-state-in-effect`).
- * The server snapshot is always `false`, so the first client paint matches the
- * server HTML and React then syncs to the real value.
+ * Server snapshot is always `false` — the first client paint matches the
+ * server HTML, then React syncs to the real value.
  */
 export function useMediaQuery(query: string) {
   const subscribe = useCallback(

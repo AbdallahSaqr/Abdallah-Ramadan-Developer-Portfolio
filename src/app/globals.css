@@ -6,40 +6,29 @@
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--fg);
-  --color-muted: var(--muted);
   --color-surface: var(--surface);
-  --color-accent: var(--accent);
   --color-border: var(--border-color);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/*
- * Warm neutrals with a single ochre accent. No gradients: flat colour only,
- * so the page reads as typography and structure rather than decoration.
- * Every pairing below meets WCAG AA against its own background.
- */
 :root {
-  --bg: #faf9f7;
-  --fg: #17150f;
-  --muted: #57534e;
-  --surface: #ffffff;
-  --border-color: rgba(23, 21, 15, 0.14);
-  --accent: #9a6510;
-  --selection-bg: rgba(154, 101, 16, 0.18);
-  --selection-fg: #17150f;
+  --bg: #fafafa;
+  --fg: #0a0a0a;
+  --surface: rgba(0, 0, 0, 0.03);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --selection-bg: rgba(99, 102, 241, 0.25);
+  --selection-fg: #0a0a0a;
   color-scheme: light;
 }
 
 .dark {
-  --bg: #0d0c0b;
-  --fg: #f4f2ef;
-  --muted: #a8a29e;
-  --surface: #151412;
-  --border-color: rgba(244, 242, 239, 0.14);
-  --accent: #d99a3a;
-  --selection-bg: rgba(217, 154, 58, 0.26);
-  --selection-fg: #f4f2ef;
+  --bg: #030303;
+  --fg: #f4f4f5;
+  --surface: rgba(255, 255, 255, 0.04);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --selection-bg: rgba(196, 181, 253, 0.35);
+  --selection-fg: #ffffff;
   color-scheme: dark;
 }
 
@@ -79,9 +68,9 @@ h2 {
 
 /* Every interactive element gets a visible keyboard focus ring. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid color-mix(in srgb, var(--fg) 65%, transparent);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 * {
@@ -97,21 +86,12 @@ h2 {
 }
 *::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 2px;
+  border-radius: 999px;
 }
 
 /* Flips icons that point along the reading direction. */
 [dir="rtl"] .rtl-flip {
   transform: scaleX(-1);
-}
-
-/* Small caps label used for section indexes and field labels. */
-@utility label {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
 }
 
 /*
