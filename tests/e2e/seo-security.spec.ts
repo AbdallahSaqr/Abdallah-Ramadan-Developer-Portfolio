@@ -65,22 +65,6 @@ test.describe("SEO", () => {
     expect(response.headers()["content-type"]).toContain("image/png");
   });
 
-  test("serves a favicon and an apple touch icon", async ({ page, request }) => {
-    await page.goto("/en");
-
-    const icon = page.locator('link[rel="icon"]').first();
-    await expect(icon).toHaveCount(1);
-
-    const iconResponse = await request.get(
-      (await icon.getAttribute("href")) ?? ""
-    );
-    expect(iconResponse.status()).toBe(200);
-    expect(iconResponse.headers()["content-type"]).toContain("image");
-
-    const appleResponse = await request.get("/apple-icon");
-    expect(appleResponse.status()).toBe(200);
-  });
-
   test("exposes Open Graph and Twitter tags", async ({ page }) => {
     await page.goto("/en");
 

@@ -46,7 +46,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) notFound();
 
   const t = messages[locale];
-  const title = `${site.name}, ${t["meta.role"]}`;
+  const title = `${site.name} — ${t["meta.role"]}`;
   const description = t["meta.description"];
 
   return {
@@ -69,6 +69,11 @@ export async function generateMetadata({
       "Egypt",
     ],
     alternates: alternates(locale),
+    icons: {
+      icon: [{ url: "/abdallah-saqr-logo.svg", type: "image/svg+xml" }],
+      shortcut: "/abdallah-saqr-logo.svg",
+      apple: "/abdallah-saqr-logo.svg",
+    },
     openGraph: {
       type: "website",
       url: `/${locale}`,
@@ -86,8 +91,8 @@ export async function generateMetadata({
 export const viewport: Viewport = {
   colorScheme: "light dark",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf9f7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0d0c0b" },
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#030303" },
   ],
 };
 

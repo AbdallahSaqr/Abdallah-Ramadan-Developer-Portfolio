@@ -40,22 +40,17 @@ describe("ThemeToggle", () => {
     });
   });
 
-  it("shows the moon in dark mode and the sun in light mode", async () => {
-    const user = userEvent.setup();
+  it("positions both icons absolutely inside a relative button so they stay centred", () => {
     const { container } = renderWithProviders(<ThemeToggle />);
+    const button = screen.getByRole("button");
+    const icons = container.querySelectorAll("svg");
 
-    expect(container.querySelectorAll("svg")).toHaveLength(1);
-    expect(screen.getByRole("button")).toHaveAttribute("aria-pressed", "true");
-
-    await user.click(screen.getByRole("button"));
-
-    await waitFor(() =>
-      expect(screen.getByRole("button")).toHaveAttribute("aria-pressed", "false")
-    );
-    expect(container.querySelectorAll("svg")).toHaveLength(1);
+    expect(button.className).toContain("relative");
+    expect(icons).toHaveLength(2);
+    icons.forEach((icon) => expect(icon.getAttribute("class")).toContain("absolute"));
   });
 
-  it("hides the decorative icon from assistive tech", () => {
+  it("hides the decorative icons from assistive tech", () => {
     const { container } = renderWithProviders(<ThemeToggle />);
     container
       .querySelectorAll("svg")

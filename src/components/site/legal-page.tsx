@@ -25,21 +25,21 @@ export function LegalPage({
 
   return (
     <>
-      <header className="border-b border-border">
-        <div className="mx-auto flex h-16 max-w-3xl items-center justify-between gap-4 px-6">
+      <header className="border-b border-foreground/[0.06]">
+        <div className="mx-auto flex h-20 max-w-3xl items-center justify-between gap-4 px-5 sm:px-6">
           <a
             href={`/${locale}`}
-            className="flex items-center gap-3 rounded-md"
             aria-label={t("nav.home")}
+            className="flex items-center gap-3"
           >
-            <Logo className="h-8 w-8" />
+            <Logo className="h-9 w-9" />
             <span className="text-sm font-medium tracking-tight text-foreground">
-              {t("site.name")}
+              {site.name}
             </span>
           </a>
           <a
             href={`/${locale}`}
-            className="inline-flex items-center gap-2 rounded-md text-sm text-muted transition-colors hover:text-foreground"
+            className="inline-flex h-9 items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.03] px-4 text-sm text-foreground/70 transition-colors hover:border-foreground/25 hover:text-foreground"
           >
             <ArrowLeft aria-hidden className="rtl-flip h-4 w-4" />
             {t("footer.back")}
@@ -47,34 +47,42 @@ export function LegalPage({
         </div>
       </header>
 
-      <main id="main" className="px-6 py-16 sm:py-20">
+      <main id="main" className="relative px-5 py-16 sm:px-6 sm:py-24">
         <article className="mx-auto max-w-3xl">
-          <p className="label">{t("legal.updated")}</p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            {t(titleKey)}
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.03] px-3 py-1">
+            <span className="font-mono text-xs tracking-wide text-foreground/60">
+              {t("legal.updated")}
+            </span>
+          </div>
+
+          <h1 className="text-3xl font-bold leading-[1.05] tracking-tight sm:text-4xl md:text-5xl">
+            <span className="bg-gradient-to-r from-indigo-400 via-foreground/90 to-rose-400 bg-clip-text text-transparent">
+              {t(titleKey)}
+            </span>
           </h1>
-          <p className="mt-6 text-base leading-relaxed text-muted sm:text-lg">
+
+          <p className="mt-6 text-base font-light leading-relaxed tracking-wide text-foreground/60 sm:text-lg">
             {t(introKey)}
           </p>
 
           <div className="mt-12 space-y-10">
             {sections.map((section) => (
               <section key={section.title}>
-                <h2 className="text-lg font-semibold tracking-tight text-foreground">
+                <h2 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
                   {t(section.title)}
                 </h2>
-                <p className="mt-3 text-base leading-relaxed text-muted">
+                <p className="mt-3 text-base font-light leading-relaxed tracking-wide text-foreground/60">
                   {t(section.body)}
                 </p>
               </section>
             ))}
           </div>
 
-          <p className="mt-12 border-t border-border pt-8 text-base text-muted">
+          <p className="mt-12 border-t border-foreground/[0.06] pt-8 text-base font-light tracking-wide text-foreground/60">
             {t("contact.badge")}:{" "}
             <a
               href={`mailto:${site.email}`}
-              className="text-foreground underline decoration-accent decoration-2 underline-offset-4 transition-colors hover:text-accent"
+              className="font-medium text-foreground transition-opacity hover:opacity-80"
             >
               {site.email}
             </a>

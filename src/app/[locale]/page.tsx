@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Background } from "@/components/site/background";
 import { Nav } from "@/components/site/nav";
 import { Hero } from "@/components/site/hero";
 import { About } from "@/components/site/about";
@@ -19,6 +20,7 @@ export default async function Page({ params }: PageProps<"/[locale]">) {
     <>
       <StructuredData locale={locale} />
       <HashScroll />
+      <Background />
       <Nav />
       <main id="main" className="relative">
         <Hero />
